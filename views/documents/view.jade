@@ -1,0 +1,21 @@
+extends ../layout
+
+block content
+    p.lead 
+        =d.title
+        small.pull-right  
+            =d.created_date.textVal() 
+    p 
+        =d.data
+        
+    - for (var i = 0; i<d.comments.length; i++)
+        div.well
+            p
+                small 
+                    =d.comments[i].user_id
+                small.pull-right
+                    =d.comments[i].created_date.textVal()
+            p
+                =d.comments[i].comment
+        
+      

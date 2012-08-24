@@ -1,0 +1,10 @@
+extends ../layout
+
+block content
+    include ../documents/fields
+
+    legend New comment 
+        form(method='post', action='/documents/' + d.id+'/comments/new')
+          input(name='_method', value='POST', type='hidden')
+          input(name='document[user_id]', value=d.id, type='hidden')
+          include fields

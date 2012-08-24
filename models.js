@@ -1,7 +1,16 @@
 var mongoose = require('mongoose').Mongoose, crypto = require("crypto");
 
+
+
 function defineModels(mongoose, fn) {
-	var Schema = mongoose.Schema, ObjectId = Schema.ObjectId;
+	var Schema = mongoose.Schema;
+	var ObjectId = Schema.ObjectId;
+	
+    Comment = new Schema({
+			'user_id': ObjectId,
+			'created_date' : Date,
+			'comment' : String
+		});
 
 	/**
 	 * Model: Document
@@ -15,12 +24,11 @@ function defineModels(mongoose, fn) {
 		'tags' : [ String ],
 		'keywords' : [ String ],
 		'user_id' : ObjectId,
-		'created_date' : Date
+		'created_date' : Date,
+		'comments' : [ Comment ]
 	});
 
 	Document.virtual('id').get(function() {
-		console.log("Doc.get" + this._id);
-		console.log("Doc.get" + this._id.toHexString());
 		return this._id.toHexString();
 	});
 
@@ -78,6 +86,7 @@ function defineModels(mongoose, fn) {
 
 	mongoose.model('Document', Document);
 	mongoose.model('User', User);
+	mongoose.model('Comment', Comment);
 
 	fn();
 }

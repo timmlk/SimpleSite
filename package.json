@@ -13,7 +13,6 @@
 		"expresso": "= 0.9.1",
 		 "connect-mongodb": ">=1.1.1",
 		 "stylus": ">0.18.0",
-		 "connect-mongodb": "*",
-		 "date": "*"
+		 "connect-mongodb": "*"
 	}
 }
