@@ -8,5 +8,10 @@ div.control-group
         textarea(name='document[data]', rows='3',id='note')
             =d.data || ''
 div.control-group
+    label(for='createddate').control-label Created:
+    div.controls
+        input(name='document[created_date]', rows='3',id='created_date', type='date', value=d.created_date.textVal() || '')
+div.control-group
     div.controls
         input(type='submit', value='Save').btn.btn-primary
+        

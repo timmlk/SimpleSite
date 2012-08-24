@@ -15,8 +15,21 @@ var //connect = require('connect'),
 	Document, 
 	User, 
 	sys = require('util');
+	require('date');
 
 var app = express();
+Date.prototype.format = function(v){
+	console.log("format :  " +v);
+	if(v && v.toString().length<2){
+		return '0'+v.toString();
+	}
+	console.log("returns "+v);
+	return v;
+}
+Date.prototype.textVal = function(){
+	return this.getFullYear()+'-'+(this.format(this.getMonth()+1))+'-'+this.format(this.getDate());
+}
+
 
 app.configure('development', function() {
 	console.log("configure dev");
@@ -88,11 +101,19 @@ function loadUser(req, res, next) {
 				req.currentUser = user;
 				next();
 			} else {
-				res.redirect('/sessions/new');
+				flash('error', 'You have to be logged in to perform that operation',res);
+				//res.redirect('/sessions/new');
+				res.render('sessions/new.jade', {
+					user : new User()
+				});
 			}
 		});
 	} else {
-		res.redirect('/sessions/new');
+		flash('error', 'You have to be logged in to perform that operation',res);
+		//res.redirect('/sessions/new');
+		res.render('sessions/new.jade', {
+			user : new User()
+		});
 	}
 }
 // setup route handlers
@@ -119,7 +140,7 @@ app.get('/documents.:format?', function(req, res) {
 	console.log("got req: " + req.url);
 	Document.find(function(err, documents) {
 
-		console.log(sys.inspect(documents));
+		//console.log(sys.inspect(documents));
 		if (!documents)
 			documents = [];
 		handleFormat(req, res, documents);
@@ -129,6 +150,9 @@ app.get('/documents.:format?', function(req, res) {
 // Create
 app.post('/documents/:id.:format?', function(req, res) {
 	var document = new Document(req.body['document']);
+	if(!document.created_date){
+		document.created_date = new Date();
+	}
 	document.save(function() {
 		handleFormat(req, res, document, null, function() {
 			res.redirect('/documents');
@@ -147,8 +171,11 @@ app.get('/documents/:id.:format?/edit', function(req, res) {
 });
 // get for create form
 app.get('/documents/new', function(req, res) {
+	var d = new Document();
+	d.created_date = new Date();
+	console.log("Date : " + d.created_date);
 	res.render('documents/new.jade', {
-		d : new Document()
+		d : d
 	});
 });
 

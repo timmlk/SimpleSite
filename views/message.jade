@@ -1,7 +1,6 @@
 - if(locals.msg)
-    div.alert
-        <button type="button"  data-dismiss="alert" class="close">
-        strong 
+    div.alert.alert-block.message
+        <button type="button"  data-dismiss="alert" class="close">x</button>
+        h4 
             =msg.level
         =msg.message
-    

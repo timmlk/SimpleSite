@@ -14,7 +14,8 @@ function defineModels(mongoose, fn) {
 		'data' : String,
 		'tags' : [ String ],
 		'keywords' : [ String ],
-		'user_id' : ObjectId
+		'user_id' : ObjectId,
+		'created_date' : Date
 	});
 
 	Document.virtual('id').get(function() {
