@@ -1,0 +1,13 @@
+extends ../layout
+
+block content
+    legend Log In
+    p
+      a.button(href='/users/new').btn Create an account
+    form.users#login(method='post', action='/sessions')
+      include ../users/fields
+      div
+        label(for='remember_me') Remember me:
+        input#remember_me(type='checkbox', name='remember_me')
+      div
+        input(type='submit', value='Log In').btn.btn-primary

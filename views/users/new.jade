@@ -1,0 +1,9 @@
+extends ../layout
+block content
+  legend Register
+
+  form.users(method='post', action='/users')
+    include fields
+    div.btn-group
+      input(type='submit', value='Register').btn.btn-primary
+      a(href='/sessions/new').btn Log In

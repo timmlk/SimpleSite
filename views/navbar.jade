@@ -1,0 +1,16 @@
+div.navbar
+    div.navbar-inner
+        a(href='#').brand Title
+        ul.nav
+            li.active
+                a(href="#") Home
+            li
+                a(href="/documents") Documents
+            li
+                a(href="#")
+        - if(locals.user_email)
+            a(href="/sessions/new")#logout.btn.btn-inverse.btn-mini.pull-right Logout
+            p.navbar-text.pull-right  
+                =locals.user_email
+        - else 
+            a(href="/sessions/new").btn.btn-inverse.pull-right Login

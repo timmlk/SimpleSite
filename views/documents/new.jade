@@ -1,0 +1,8 @@
+extends ../layout
+
+block content
+    legend New Document
+    form(method='post', action='/documents/' + d.id)
+      input(name='_method', value='POST', type='hidden')
+      include fields
+  

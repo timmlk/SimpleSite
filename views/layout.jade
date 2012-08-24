@@ -1,0 +1,20 @@
+!!!
+html
+  head
+    title= 'Web Node'
+    link(rel='stylesheet', href='/stylesheets/style.css')
+    link(rel='stylesheet', href='/stylesheets/bootstrap.css')
+    link(rel='stylesheet', href='/stylesheets/bootstrap-responsive.css')
+    script(type='text/javascript', src='https://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js')
+    body
+        include navbar
+        div.row
+            div.page-header.span10.offset2
+                h1 Timms fantastiske node.js test site
+                    p
+                        <small> Dette er en test af node.js med Express, mongo, mongose, jade, stylus, twitter bootstrap ...
+            div.span6.offset3
+                include message
+                block content
+        script(type='text/javascript', src='/javascripts/application.js')
+        script(type='text/javascript', src='/javascripts/bootstrap.js')

@@ -1,0 +1,19 @@
+extends layout
+
+block content
+  legend Your Documents
+  
+  p
+    a(class='btn btn-primary', href='/documents/new') + New Document
+  
+  
+    - for (var d in documents)
+     div.well
+        p
+            =documents[d].title
+        div.btn-group
+            a(class='btn btn-mini btn-primary', href='/documents/' + documents[d].id + '/edit') Edit
+            a(class='btn btn-mini btn-warning destroy', href='/documents/' + documents[d].id + '/delete') <i class="icon-trash icon-white"></i> Delete
+            a(class='btn btn-mini', href='/documents/' + documents[d].id)
+              <i class="icon-zoom-in"></i> View
+              
