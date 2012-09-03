@@ -19,9 +19,19 @@ Date.prototype.textVal = function() {
 			+ this.format(this.getDate());
 }
 
+function setMongoUri(altUri){
+	//console.log("Configuring mongo db on : "); 
+	if(process.env.MONGOLAB_URI){
+		app.set('db-uri', process.env.MONGOLAB_URI);
+	}else{
+		app.set('db-uri', altUri);
+	}
+	console.log("Configuring mongo db uri on : %s",app.get('db-uri'));
+}
+
 app.configure('development', function() {
 	console.log("configure dev");
-	app.set('db-uri', 'mongodb://localhost/webnode-dev');
+	setMongoUri('mongodb://localhost/webnode-dev');
 	app.use(express.errorHandler({
 		dumpExceptions : true
 	}));
@@ -31,14 +41,16 @@ app.configure('development', function() {
 });
 
 app.configure('test', function() {
-	app.set('db-uri', 'mongodb://localhost/webnode-test');
+	setMongoUri('mongodb://localhost/webnode-test');
+	//app.set('db-uri', 'mongodb://localhost/webnode-test');
 	app.set('view options', {
 		pretty : true
 	});
 });
 
 app.configure('production', function() {
-	app.set('db-uri', 'mongodb://localhost/webnode-production');
+	setMongoUri('mongodb://localhost/webnode-production');
+	//app.set('db-uri', 'mongodb://localhost/webnode-production');
 });
 
 app.configure(function() {
