@@ -1,6 +1,7 @@
 {
-	"name": "WebNode",
+	"name": "SimpleSite",
 	"version": "0.0.1",
+	  "author" : "Timm Kristensen <timmkristensen@gmail.com>",
 	"private": true,
 	"scripts": {
     "start": "node app"
@@ -19,5 +20,9 @@
          "passport-local" : "*",
          "passport-google" : "*",
          "passport-facebook" : ">=0.1.4"
-         }
+         },
+  "engines": {
+    "node": "0.8.6",
+    "npm":  "1.1.x"
+  }
 }
