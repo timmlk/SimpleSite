@@ -25,7 +25,7 @@ var findDoc;// = q.node(Document.findById);
 
 function isDocOwner(req){
 	console.log('isDocOwner : req.current_doc'+req.current_doc );//+ (req.current_doc && req.current_doc.user_id ==req.session.user_id));
-	return req.current_doc && req.current_doc.user_id ==req.user.id;
+	return (req.user && req.current_doc) && req.current_doc.user_id ==req.user.id;
 	/*if(!findDoc) findDoc = q.nbind(Document.findById, Document);
 	return findDoc(docid).then(function(doc){
 		console.log("Return from promise then");
