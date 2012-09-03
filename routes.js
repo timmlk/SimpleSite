@@ -2,65 +2,12 @@ var models = require('./models'),sys = require('util'), q= require('q');
 
 var Document, User, Comment;
 
-function pr(nodeAsyncFn, context) {
-	  return function() {
-	    var defer = q.defer()
-	      , args = Array.prototype.slice.call(arguments);
 
-	    args.push(function(err, val) {
-	      if (err !== null) {
-	        return defer.reject(err);
-	      }
-
-	      return defer.resolve(val);
-	    });
-
-	    nodeAsyncFn.apply(context || {}, args);
-
-	    return defer.promise;
-	  };
-	};
-	
 var findDoc;// = q.node(Document.findById);
 
 function isDocOwner(req){
 	console.log('isDocOwner : req.current_doc'+req.current_doc );//+ (req.current_doc && req.current_doc.user_id ==req.session.user_id));
 	return (req.user && req.current_doc) && req.current_doc.user_id ==req.user.id;
-	/*if(!findDoc) findDoc = q.nbind(Document.findById, Document);
-	return findDoc(docid).then(function(doc){
-		console.log("Return from promise then");
-		return doc && userid && doc == userid;
-	})*/
-	/*return Document.findById(docid, function(doc){
-		return doc && userid && doc == userid;
-	});*/
-	
-	
-}
-
-
-
-function loadUser(req, res, next) {
-	if (req.session.user_id) {
-		User.findById(req.session.user_id, function(err, user) {
-			if (user) {
-				req.currentUser = user;
-				next();
-			} else {
-				flash('error', 'You have to be logged in to perform that operation',res);
-				res.render('sessions/new.jade', {
-					user : new User()
-				});
-			}
-		});
-	} else {
-		flash('error', 'You have to be logged in to perform that operation',res);
-		//res.redirect('/sessions/new');
-		res.render('sessions/new.jade', {
-			user : new User(),
-			redirectTo : req.query
-		});
-	}
 }
 
 
@@ -91,10 +38,12 @@ function handleFormat(req, res, data/* json handler, default handler */) {
 		}
 	}
 }
+
 function ensureAuthenticated(req, res, next) {
 	  if (req.isAuthenticated()) { return next(); }
 	  res.redirect('/sessions/new')
 	}
+
 function flash(level, msg, req){
 	console.log("flash");
 	req.session.msg = {

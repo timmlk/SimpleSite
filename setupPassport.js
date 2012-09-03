@@ -17,8 +17,7 @@ exports.configPassport = function configurePassport(app) {
 		usernameField : 'email',
 		passwordField : 'password'
 	}, function(username, password, done) {
-		console.log("passport login, Username = " + username + ", passowrd : "
-				+ password);
+		console.log("passport login, Username = " + username);
 		User.findOne({
 			email : username
 		}, function(err, user) {
