@@ -1,9 +1,13 @@
 div.control-group
+    label(for='name').control-label User name:
+    div.controls
+        input(name='name', value=user.name|| ', id='name')
+div.control-group
     label(for='email').control-label Email:
     div.controls
-        input(name='user[email]', value=user.email || ', id='email')
+        input(name='email', value=user.email || ', id='email')
 
 div.control-group
     label(for='password').control-label Password:
     div.controls
-        input(name='user[password]', value=user.password || '', type='password', id='password')
+        input(name='password', value=user.password || '', type='password', id='password')

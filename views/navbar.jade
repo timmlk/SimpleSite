@@ -8,9 +8,20 @@ div.navbar
                 a(href="/documents") Documents
             li
                 a(href="#")
-        - if(locals.user_email)
+        - if(locals.user && locals.user.email) // seems that user id always present in cookie so passport always sets this
             a(href="/sessions/new")#logout.btn.btn-inverse.btn-mini.pull-right Logout
             p.navbar-text.pull-right  
-                =locals.user_email
+                =locals.user.name || locals.user.email 
         - else 
-            a(href="/sessions/new").btn.btn-inverse.pull-right Login
+            div.btn-group.pull-right
+                a(href="#", data-toggle="dropdown").btn.btn-primary.dropdown-toggle Login
+                    span.caret
+                ul.dropdown-menu
+                    li
+                        a(href="/sessions/new") Local
+                    li
+                        a(href="/auth/google") Google
+                    li
+                        a(href="/auth/facebook") Facebook
+              
+                

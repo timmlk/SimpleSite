@@ -1,6 +1,44 @@
-var models = require('./models'),sys = require('util');
+var models = require('./models'),sys = require('util'), q= require('q');
 
 var Document, User, Comment;
+
+function pr(nodeAsyncFn, context) {
+	  return function() {
+	    var defer = q.defer()
+	      , args = Array.prototype.slice.call(arguments);
+
+	    args.push(function(err, val) {
+	      if (err !== null) {
+	        return defer.reject(err);
+	      }
+
+	      return defer.resolve(val);
+	    });
+
+	    nodeAsyncFn.apply(context || {}, args);
+
+	    return defer.promise;
+	  };
+	};
+	
+var findDoc;// = q.node(Document.findById);
+
+function isDocOwner(req){
+	console.log('isDocOwner : req.current_doc'+req.current_doc );//+ (req.current_doc && req.current_doc.user_id ==req.session.user_id));
+	return req.current_doc && req.current_doc.user_id ==req.session.user_id;
+	/*if(!findDoc) findDoc = q.nbind(Document.findById, Document);
+	return findDoc(docid).then(function(doc){
+		console.log("Return from promise then");
+		return doc && userid && doc == userid;
+	})*/
+	/*return Document.findById(docid, function(doc){
+		return doc && userid && doc == userid;
+	});*/
+	
+	
+}
+
+
 
 function loadUser(req, res, next) {
 	if (req.session.user_id) {
@@ -19,7 +57,8 @@ function loadUser(req, res, next) {
 		flash('error', 'You have to be logged in to perform that operation',res);
 		//res.redirect('/sessions/new');
 		res.render('sessions/new.jade', {
-			user : new User()
+			user : new User(),
+			redirectTo : req.query
 		});
 	}
 }
@@ -52,44 +91,89 @@ function handleFormat(req, res, data/* json handler, default handler */) {
 		}
 	}
 }
-
-function flash(level, msg, res){
+function ensureAuthenticated(req, res, next) {
+	  if (req.isAuthenticated()) { return next(); }
+	  res.redirect('/sessions/new')
+	}
+function flash(level, msg, req){
 	console.log("flash");
-	res.locals.msg = {
+	req.session.msg = {
 			level : level,
 			message: msg
 	}
 }
 
+
+
 function setupRoutes(app){
-	Document = app.Document, User = app.User, Comment = app.Comment;
+	Document = app.Document, User = app.User, Comment = app.Comment, passport = app.Passport;
 	// setup route handlers
 	//always try to set user
 	app.all('*',function(req,res,next){
-		console.log("app.all : "+req+ ", "+res);
-		if(req.session.user_id){
-			User.findById(req.session.user_id, function(err, user) {
-				if (user) {
-					req.currentUser = user;
-					res.locals.user_email = user.email;
-				}
-			});	
+		if(req.session.msg){ // hack to facilitate obsolete flash method used in express... change express
+			res.locals.msg =req.session.msg; 
+			req.session.msg = null;
+		}
+		if(!req.flash){// hack to facilitate obsolete flash method used in express... change express
+			req.flash = function(lvl,msg){flash(lvl,msg,req);};
+		}
+		
+		if(req.user){
+			console.log("setting user "+req.user);
+			res.locals.user = req.user;
 		}
 		next();
 	});
 	
+	/**
+	 * Always try to load doc
+	 * TODO maybe convert to middleware
+	 */
+	app.all('/documents/:id.:format?*', function (req,res,next){
+		console.log("trying to default load doc");
+		if(req.params.id){
+			Document.findById(req.params.id,function (err, doc){
+				console.log("Setting current doc");
+				req.current_doc = doc;
+				res.locals.enableCommentDelete = isDocOwner(req);
+				next();
+			});
+		}else{
+			console.log("loadDoc next");
+			next();
+		}
+		
+	});
 	// comments
-	
-	app.get('/documents/:id/comments/new', loadUser, function(req,res){
+	app.get('/documents/:id/comments/new', ensureAuthenticated, function(req,res){
 		Document.findById(req.params.id, function(err, d) {
-			console.log(sys.inspect(models));
+			//console.log(sys.inspect(models));
 			res.render('comments/new.jade', {
 				d : d,
 				c : new Comment()
 			});
 		});
 	});
-	app.post('/documents/:id/comments/new', loadUser, function(req,res){
+	app.del('/documents/:id/comments/:comid', ensureAuthenticated, function(req,res){
+		console.log("delete comment");
+		Document.findById(req.params.id, function(err, d) {
+			if(isDocOwner(req)){
+				console.log("Found doc");
+				d.comments.id(req.params.comid).remove();
+				d.save(function(){
+					handleFormat(req, res, d, null, function() {
+						res.redirect('/documents/'+d.id);
+					});
+						
+				});
+			}else{
+				console.log("redirect to not authorized");
+				res.redirect('/notauthorized.jade');
+			}
+			
+		});
+	});
+	app.post('/documents/:id/comments/new', ensureAuthenticated, function(req,res){
 		Document.findById(req.params.id, function(err, d) {
 			console.log(sys.inspect(d));
 			var com = new Comment(req.body['comment']);
@@ -102,7 +186,7 @@ function setupRoutes(app){
 			d.comments.push(com)
 			d.save(function(){
 				handleFormat(req, res, d, null, function() {
-					res.redirect('/documents');
+					res.redirect('/documents/'+req.params.id);
 				});
 			});
 			
@@ -122,7 +206,7 @@ function setupRoutes(app){
 	});
 
 	// Create
-	app.post('/documents/:id.:format?', function(req, res) {
+	app.post('/documents/:id.:format?',ensureAuthenticated, function(req, res) {
 		var document = new Document(req.body['document']);
 		if(!document.created_date){
 			document.created_date = new Date();
@@ -148,6 +232,7 @@ function setupRoutes(app){
 	});
 	// get for create form
 	app.get('/documents/new', function(req, res) {
+		
 		var d = new Document();
 		d.created_date = new Date();
 		console.log("Date : " + d.created_date);
@@ -160,7 +245,7 @@ function setupRoutes(app){
 	app.get('/documents/:id.:format?', function(req, res) {
 		console.log("got read for id : " + req.params.id);
 		Document.findById(req.params.id, function(err, d) {
-			console.log(sys.inspect(d));
+			//console.log(sys.inspect(d));
 			handleFormat(req, res, d, null, function() {
 				res.render('documents/view.jade', { // todo
 					d : d
@@ -186,7 +271,7 @@ function setupRoutes(app){
 	});
 
 	// Delete
-	app.del('/documents/:id.:format?',loadUser, function(req, res) {
+	app.del('/documents/:id.:format?',ensureAuthenticated, function(req, res) {
 		console.log('deleting:' + req.params.id)
 		// Load the document
 		Document.findById(req.params.id, function(err, d) {
@@ -204,42 +289,50 @@ function setupRoutes(app){
 
 	// Sessions
 	app.get('/sessions/new', function(req, res) {
-		console.log("new session");
+		console.log("new session " + res.locals.message);
+		console.log("message " + req.message);
 		res.render('sessions/new.jade', {
-			user : new User()
+			user : new User(),
+			redirectTo : req.get('referrer')
 		});
 	});
 
-	app.post('/sessions', function(req, res) {
-		// Find the user and set the currentUser session variable
-		  User.findOne({ email: req.body.user.email }, function(err, user) {
-			    if (user && user.authenticate(req.body.user.password)) {
-			      req.session.user_id = user.id;
-
+	app.post('/sessions', passport.authenticate('local',{failureRedirect: '/sessions/new', failureFlash: true}), function(req, res) {
+		console.log("Login post body");
+		if(req.body.redirect){
+  		  return res.redirect(req.body.redirect);
+		}
+  	  return res.redirect('back');
+  	  
+	
 			      // Remember me
-			      if (req.body.remember_me) {
+	/*		      if (req.body.remember_me) {
 			        var loginToken = new LoginToken({ email: user.email });
 			        loginToken.save(function() {
 			          res.cookie('logintoken', loginToken.cookieValue, { expires: new Date(Date.now() + 2 * 604800000), path: '/' });
-			          res.redirect('/documents');
+			          return res.redirect('/documents');
 			        });
 			      } else {
-			        res.redirect('/documents');
+			    	  if(req.body.redirect){
+			    		  return res.redirect(req.body.redirect);
+			    	  }
+			    	  return res.redirect('back');
 			      }
 			    } else {
 			      flash('error', 'Incorrect credentials',res);
-			      res.render('sessions/new', { user: new User()});
+			      return res.render('sessions/new', { user: new User(), redirectTo : req.body.redirect});
 			    }
-			  }); 
+			  });*/ 
 	});
 
-	app.del('/sessions', loadUser, function(req, res) {
+	app.del('/sessions', ensureAuthenticated, function(req, res) {
 		console.log("close session");
 		// Remove the session
 		if (req.session) {
 			req.session.destroy(function() {
 			});
 		}
+		req.logOut();//close passport session
 		res.redirect('/sessions/new');
 	});
 
@@ -276,8 +369,30 @@ function setupRoutes(app){
 		user.save(userSaved, userSaveFailed);
 	});
 	
+	// Redirect the user to Google for authentication.  When complete, Google
+	// will redirect the user back to the application at
+	// /auth/google/return
+	app.get('/auth/google', passport.authenticate('google'));
 
-	
+	// Google will redirect the user to this URL after authentication.  Finish
+	// the process by verifying the assertion.  If valid, the user will be
+	// logged in.  Otherwise, authentication has failed.
+	app.get('/auth/google/return', 
+	  passport.authenticate('google', { successRedirect: '/documents',
+	                                    failureRedirect: '/sessions/new',failureFlash: true }));
+
+	// Redirect the user to Facebook for authentication.  When complete,
+	// Facebook will redirect the user back to the application at
+	// /auth/facebook/callback
+	app.get('/auth/facebook', passport.authenticate('facebook'));
+
+	// Facebook will redirect the user to this URL after approval.  Finish the
+	// authentication process by attempting to obtain an access token.  If
+	// access was granted, the user will be logged in.  Otherwise,
+	// authentication has failed.
+	app.get('/auth/facebook/callback', 
+	  passport.authenticate('facebook', { successRedirect: '/documents',
+	                                      failureRedirect: '/sessions/new',failureFlash: true }));
 
 }
 

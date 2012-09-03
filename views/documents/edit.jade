@@ -2,7 +2,7 @@ extends ../layout
 
 block content
     legend Edit Document
-    form(method='post', action='/documents/' + d.id)
+    form(method='post', action='/documents/' + d.id).well
       input(name='document[id]', value=d.id, type='hidden')
       input(name='_method', value='PUT', type='hidden')
       include fields

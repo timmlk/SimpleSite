@@ -14,8 +14,9 @@ block content
         p
             =documents[d].data
         div.btn-group
-            a(class='btn btn-mini btn-primary', href='/documents/' + documents[d].id + '/edit') Edit
-            a(class='btn btn-mini btn-warning destroy', href='/documents/' + documents[d].id) <i class="icon-trash icon-white"></i> Delete
+            - if(locals.enableCommentDelete)
+                a(class='btn btn-mini btn-primary', href='/documents/' + documents[d].id + '/edit') Edit
+                a(class='btn btn-mini btn-warning destroy', href='/documents/' + documents[d].id) <i class="icon-trash icon-white"></i> Delete
             a(class='btn btn-mini', href='/documents/' + documents[d].id)
               <i class="icon-zoom-in"></i> View
             a(class='btn btn-mini', href='/documents/' + documents[d].id+'/comments/new')

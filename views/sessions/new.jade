@@ -5,6 +5,8 @@ block content
     p
       a.button(href='/users/new').btn Create an account
     form.users#login(method='post', action='/sessions')
+      - if(locals.redirectTo)  
+        input(name='redirect', value=redirectTo, type='hidden')
       include ../users/fields
       div
         label(for='remember_me') Remember me:

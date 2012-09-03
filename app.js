@@ -2,33 +2,22 @@
  * Module dependencies.
  */
 
-var //connect = require('connect'),
-	jade = require('jade'), 
-	express = require('express'), 
-	http = require('http'), 
-	path = require('path'), 
-	models = require('./models.js'), 
-	mongoose = require('mongoose'), 
-	mongoStore = require('connect-mongodb'), 
-	db, 
-	Document, 
-	User, 
-	sys = require('util'),
-	routes = require('./routes');
+var // connect = require('connect'),
+jade = require('jade'), express = require('express'), http = require('http'), path = require('path'), models = require('./models.js'), mongoose = require('mongoose'), mongoStore = require('connect-mongodb'), db, Document, User, sys = require('util'), routes = require('./routes'), passport = require('passport'), 
+//LocalStrategy = require('passport-local').Strategy, GoogleStrategy = require('passport-google').Strategy,FacebookStrategy = require('passport-facebook').Strategy,
+passportConfig=require('./setupPassport');
 
 var app = express();
-Date.prototype.format = function(v){
-	console.log("format :  " +v);
-	if(v && v.toString().length<2){
-		return '0'+v.toString();
+Date.prototype.format = function(v) {
+	if (v && v.toString().length < 2) {
+		return '0' + v.toString();
 	}
-	console.log("returns "+v);
 	return v;
 }
-Date.prototype.textVal = function(){
-	return this.getFullYear()+'-'+(this.format(this.getMonth()+1))+'-'+this.format(this.getDate());
+Date.prototype.textVal = function() {
+	return this.getFullYear() + '-' + (this.format(this.getMonth() + 1)) + '-'
+			+ this.format(this.getDate());
 }
-
 
 app.configure('development', function() {
 	console.log("configure dev");
@@ -69,11 +58,14 @@ app.configure(function() {
 		store : mongoStore(app.get('db-uri')),
 		secret : 'topsecret'
 	}));
+	app.use(passport.initialize());
+	app.use(passport.session());
 	app.use(express.logger({
 		format : '\x1b[1m:method\x1b[0m \x1b[33m:url\x1b[0m :response-time ms'
-	}))
+	}));
 
 });
+
 
 // define models
 models.defineModels(mongoose, function() {
@@ -94,7 +86,7 @@ function mongoStoreConnectionArgs() {
 	};
 }
 
-
+passportConfig.configPassport(app);//configurePassport();
 // setup routes
 routes.setupRoutes(app);
 
@@ -105,6 +97,6 @@ http.createServer(app).listen(
 			console.log("Express server listening on port " + app.get('port'));
 			console.log('Express server listening on port %d, environment: %s',
 					app.get('port'), app.settings.env)
-			//console.log('Using connect %s, Express %s, Jade %s',
-			//		connect.version, express.version, jade.version);
+			// console.log('Using connect %s, Express %s, Jade %s',
+			// connect.version, express.version, jade.version);
 		});

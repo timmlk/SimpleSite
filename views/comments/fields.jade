@@ -2,11 +2,11 @@ div.control-group
     label(for='user').control-label User:
     div.controls
        span(id='user') 
-        =d.user_id
+        =user.email
 div.control-group
     label(for='comment').control-label Comment:
     div.controls
-        textarea(name='comment[comment]', rows='3',id='comment')
+        textarea(name='comment[comment]', rows='5',id='comment').span5
             =c.comment || ''
 div.control-group
     label(for='createddate').control-label Created:
