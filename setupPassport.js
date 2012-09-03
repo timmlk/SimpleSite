@@ -4,6 +4,12 @@ var sys = require('util'),
 	GoogleStrategy = require('passport-google').Strategy,
 	FacebookStrategy = require('passport-facebook').Strategy;
 
+var host_name = process.env.HOST_NAME;
+
+if(!host_name){
+	host_name = 'http://localhost:3000';
+}
+
 exports.configPassport = function configurePassport(app) {
 	var User = app.User;
 	// LOCAL config
@@ -49,8 +55,8 @@ exports.configPassport = function configurePassport(app) {
 	});
 	// openid -- google
 	passport.use(new GoogleStrategy({
-		returnURL : 'http://localhost:3000/auth/google/return',
-		realm : 'http://localhost:3000/'
+		returnURL : host_name+'/auth/google/return',
+		realm : host_name // +/
 	}, function(identifier, profile, done) {
 		console.log("Return from google : " + identifier + ", profile: "
 				+ sys.inspect(profile));
@@ -76,7 +82,7 @@ exports.configPassport = function configurePassport(app) {
 	passport.use(new FacebookStrategy({
 	    clientID: "126100004165704",
 	    clientSecret: "7def62be7dea141009a41c9df7c89177",
-	    callbackURL: "http://localhost:3000/auth/facebook/callback"
+	    callbackURL: host_name+"/auth/facebook/callback"
 	  },
 	  function(accessToken, refreshToken, profile, done) {
 		  console.log("Return from facebook : " + sys.inspect(profile));
