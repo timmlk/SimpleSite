@@ -6,8 +6,17 @@ block content
       a.button(href='/users/new').btn Create an account
     form.users#login(method='post', action='/sessions')
       - if(locals.redirectTo)  
-        input(name='redirect', value=redirectTo, type='hidden')
-      include ../users/fields
+            input(name='redirect', value=redirectTo, type='hidden')
+      div.control-group
+        label(for='email').control-label Email:
+        div.controls
+            input(name='email', value=user.email || ', id='email')
+
+      div.control-group
+        label(for='password').control-label Password:
+        div.controls
+            input(name='password', value=user.password || '', type='password', id='password')
+
       div
         label(for='remember_me') Remember me:
         input#remember_me(type='checkbox', name='remember_me')

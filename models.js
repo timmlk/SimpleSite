@@ -8,10 +8,11 @@ function defineModels(mongoose, fn) {
 	
     Comment = new Schema({
 			'user_id': ObjectId,
+			'user_name' : String, // hmm maybe define obj ref 
 			'created_date' : Date,
 			'comment' : String
 		});
-
+    
 	/**
 	 * Model: Document
 	 */

@@ -25,7 +25,7 @@ var findDoc;// = q.node(Document.findById);
 
 function isDocOwner(req){
 	console.log('isDocOwner : req.current_doc'+req.current_doc );//+ (req.current_doc && req.current_doc.user_id ==req.session.user_id));
-	return req.current_doc && req.current_doc.user_id ==req.session.user_id;
+	return req.current_doc && req.current_doc.user_id ==req.user.id;
 	/*if(!findDoc) findDoc = q.nbind(Document.findById, Document);
 	return findDoc(docid).then(function(doc){
 		console.log("Return from promise then");
@@ -148,9 +148,11 @@ function setupRoutes(app){
 	app.get('/documents/:id/comments/new', ensureAuthenticated, function(req,res){
 		Document.findById(req.params.id, function(err, d) {
 			//console.log(sys.inspect(models));
+			var com = new Comment();
+			com.created_date = new Date();
 			res.render('comments/new.jade', {
 				d : d,
-				c : new Comment()
+				c : com
 			});
 		});
 	});
@@ -181,7 +183,8 @@ function setupRoutes(app){
 				com.created_date = new Date();
 			}
 			if(!com.user_id){
-				com.user_id = req.session.user_id;
+				com.user_id = req.user.id;
+				com.user_name = req.user.name;
 			}
 			d.comments.push(com)
 			d.save(function(){
@@ -211,8 +214,8 @@ function setupRoutes(app){
 		if(!document.created_date){
 			document.created_date = new Date();
 		}
-		if(!document.user_id && req.currentUser){
-			document.user_id=req.currentUser._id;
+		if(!document.user_id && req.user){
+			document.user_id=req.user.id;
 		}
 		document.save(function() {
 			handleFormat(req, res, document, null, function() {
@@ -345,6 +348,9 @@ function setupRoutes(app){
 	app.post('/users.:format?', function(req, res) {
 		console.log("new user");
 		var user = new User(req.body.user);
+		user.provider = 'local';
+		user.role = 'user';
+		console.log("user to create : "+sys.inspect(user));
 
 		function userSaved() {
 			switch (req.params.format) {
@@ -358,7 +364,8 @@ function setupRoutes(app){
 			}
 		}
 
-		function userSaveFailed() {
+		function userSaveFailed(err) {
+			console.log(err);
 			res.render('users/new.jade', {
 				locals : {
 					user : user

@@ -2,7 +2,7 @@ div.control-group
     label(for='user').control-label User:
     div.controls
        span(id='user') 
-        =user.email
+        =user.name
 div.control-group
     label(for='comment').control-label Comment:
     div.controls
@@ -11,7 +11,9 @@ div.control-group
 div.control-group
     label(for='createddate').control-label Created:
     div.controls
-        input(name='comment[created_date]', rows='3',id='created_date', type='date', value=c.created_date || '', disabled)
+    span(id='created_date') 
+        =c.created_date || ''
+        //input(name='comment[created_date]', rows='3',id='created_date', type='date', value=c.created_date || '', disabled)
 div.control-group
     div.controls
         input(type='submit', value='Save').btn.btn-primary
