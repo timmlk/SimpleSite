@@ -6,6 +6,8 @@ var // connect = require('connect'),
 jade = require('jade'), express = require('express'), http = require('http'), path = require('path'), models = require('./models.js'), mongoose = require('mongoose'), mongoStore = require('connect-mongodb'), db, Document, User, sys = require('util'), routes = require('./routes'), passport = require('passport'), 
 //LocalStrategy = require('passport-local').Strategy, GoogleStrategy = require('passport-google').Strategy,FacebookStrategy = require('passport-facebook').Strategy,
 passportConfig=require('./setupPassport');
+var cluster = require('cluster');
+var numCPUs = require('os').cpus().length;
 
 var app = express();
 Date.prototype.format = function(v) {
@@ -102,8 +104,22 @@ passportConfig.configPassport(app);//configurePassport();
 // setup routes
 routes.setupRoutes(app);
 
-// finally create server
-http.createServer(app).listen(
+console.log("Clustering over %s cpus", numCPUs);
+if (cluster.isMaster) {
+	  // Fork workers.
+	  for (var i = 0; i < numCPUs; i++) {
+	    cluster.fork();
+	  }
+
+	  cluster.on('exit', function(worker, code, signal) {
+	    console.log('worker ' + worker.process.pid + ' died');
+	  });
+	} else {
+	  // Workers can share any TCP connection
+	  // In this case its a HTTP server
+	 
+// 	finally create server
+	http.createServer(app).listen(
 		app.get('port'),
 		function() {
 			console.log("Express server listening on port " + app.get('port'));
@@ -112,3 +128,4 @@ http.createServer(app).listen(
 			// console.log('Using connect %s, Express %s, Jade %s',
 			// connect.version, express.version, jade.version);
 		});
+}
