@@ -15,8 +15,8 @@ var jade = require('jade'),
 	passport = require('passport'), 
 	passportConfig=require('./setupPassport');
 	
-//var cluster = require('cluster');
-//var numCPUs = require('os').cpus().length;
+var cluster = require('cluster');
+var numCPUs = require('os').cpus().length;
 
 var app = express();
 
@@ -103,7 +103,7 @@ passportConfig.configPassport(app);
 // setup routes
 routes.setupRoutes(app);
 
-/*console.log("Clustering over %s cpus", numCPUs);
+console.log("Clustering over %s cpus", numCPUs);
 if (cluster.isMaster) {
 	  // Fork workers.
 	  for (var i = 0; i < numCPUs; i++) {
@@ -116,7 +116,7 @@ if (cluster.isMaster) {
 	} else {
 	  // Workers can share any TCP connection
 	  // In this case its a HTTP server
-	 */
+	 
 // 	finally create server
 	http.createServer(app).listen(
 		app.get('port'),
@@ -127,4 +127,4 @@ if (cluster.isMaster) {
 			// console.log('Using connect %s, Express %s, Jade %s',
 			// connect.version, express.version, jade.version);
 		});
-//}
+}
