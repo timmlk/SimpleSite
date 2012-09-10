@@ -85,26 +85,29 @@ app.configure(function() {
 	app.use(express.logger({
 		format : '\x1b[1m:method\x1b[0m \x1b[33m:url\x1b[0m :response-time ms'
 	}));
+	models.defineModels(mongoose, function() {
+		console.log("define models");
+		global.Document = app.Document = Document = mongoose.model('Document');
+		global.User = app.User = User = mongoose.model('User');
+		global.Comment = app.Comment = Comment = mongoose.model("Comment");
+		// app.LoginToken = LoginToken = mongoose.model('LoginToken');
+//		db = mongoose.connect(app.get('db-uri'));
+	})
+	passportConfig.configPassport(app);
+	routes.setupRoutes(app);
+	app.use(require('./routes/documents'));
+	app.use(require('./routes/sessions'));
+	app.use(require('./routes/users'));
 
 });
 
 //define models
-models.defineModels(mongoose, function() {
-	console.log("define models");
-	app.Document = Document = mongoose.model('Document');
-	app.User = User = mongoose.model('User');
-	app.Comment = Comment = mongoose.model("Comment");
-	// app.LoginToken = LoginToken = mongoose.model('LoginToken');
-//	db = mongoose.connect(app.get('db-uri'));
-})
 
 
-passportConfig.configPassport(app);
-// setup routes
-routes.setupRoutes(app);
 
-console.log("Clustering over %s cpus", numCPUs);
-if (cluster.isMaster) {
+
+//console.log("Clustering over %s cpus", numCPUs);
+/*if (cluster.isMaster) {
 	  // Fork workers.
 	  for (var i = 0; i < numCPUs; i++) {
 	    cluster.fork();
@@ -116,15 +119,22 @@ if (cluster.isMaster) {
 	} else {
 	  // Workers can share any TCP connection
 	  // In this case its a HTTP server
-	 
+		app.worker_id = process.env.NODE_WORKER_ID;
+		console.log("cluster worker"+app.worker_id);*/
+		
+		// setup routes
+		
+ 
 // 	finally create server
 	http.createServer(app).listen(
 		app.get('port'),
 		function() {
 			console.log("Express server listening on port " + app.get('port'));
 			console.log('Express server listening on port %d, environment: %s',
-					app.get('port'), app.settings.env)
-			// console.log('Using connect %s, Express %s, Jade %s',
+					app.get('port'), app.settings.env);
+			
+			//console.log('Using connect %s, Express %s, Jade %s',
 			// connect.version, express.version, jade.version);
 		});
-}
+		
+//}

@@ -106,5 +106,5 @@ exports.configPassport = function configurePassport(app) {
 	   
 	  }
 	));
-	app.Passport = passport;
+	global.Passport = app.Passport = passport;
 }
