@@ -14,12 +14,13 @@
 		"expresso": "= 0.9.1",
 		 "connect-mongodb": ">=1.1.1",
 		 "stylus": ">0.18.0",
-		 "connect-mongodb": "*",
-		 "q": "*",
+		  "q": "*",
 		 "passport": "*",
          "passport-local" : "*",
          "passport-google" : "*",
-         "passport-facebook" : ">=0.1.4"
+         "passport-facebook" : ">=0.1.4",
+         "connect" : ">=2.4.5",
+         "qs" : ">=0.4.2
          },
   "engines": {
     "node": "0.8.6",

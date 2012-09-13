@@ -10,5 +10,7 @@ Very simple site with a rest like interface.
 
 TODO
 ------
-Get rid of that pesky session... we dont like session data. 
+Refac to use Q.js
+
+DONE : Get rid of that pesky session... we dont like session data. 
     This would/should also enable clustering of the app.

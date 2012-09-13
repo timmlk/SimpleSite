@@ -13,7 +13,8 @@ var jade = require('jade'),
 	sys = require('util'), 
 	routes = require('./routes'), 
 	passport = require('passport'), 
-	passportConfig=require('./setupPassport');
+	passportConfig=require('./setupPassport'),
+	formidable = require('formidable');
 	
 var cluster = require('cluster');
 var numCPUs = require('os').cpus().length;
@@ -21,23 +22,12 @@ var numCPUs = require('os').cpus().length;
 var app = express();
 
 function setMongoUri(altUri){
-	//console.log("Configuring mongo db on : "); 
 	if(process.env.MONGOLAB_URI){
 		app.set('db-uri', process.env.MONGOLAB_URI);
 	}else{
 		app.set('db-uri', altUri);
 	}
 	console.log("Configuring mongo db uri on : %s",app.get('db-uri'));
-}
-
-//Converts a database connection URI string to
-//the format connect-mongodb expects
-function mongoStoreConnectionArgs() {console.log("User : "+sys.inspect(db.connection));
-return { dbname: db.connection.name,
-        host: db.connection.host,
-        port: db.connection.port,
-        username: db.connection.username,
-        password: db.connection.password };
 }
 
 
@@ -62,7 +52,9 @@ app.configure('test', function() {
 app.configure('production', function() {
 	setMongoUri('mongodb://localhost/webnode-production');
 });
+
 db = mongoose.connect(app.get('db-uri'));
+
 app.configure(function() {
 	console.log("configure : "+db);
 	app.set('port', process.env.PORT || 3000);
@@ -70,11 +62,12 @@ app.configure(function() {
 	app.set('view engine', 'jade');
 	app.use(express.favicon());
 	app.use(express.logger('dev'));
-	app.use(express.bodyParser());
+	//configureFormidable(app);
+	//app.use(express.bodyParser());
+	app.use(require('./multipartformparser')());
 	app.use(express.cookieParser());
 	app.use(express.methodOverride());
-	// app.use(app.router);
-	app.use(express.methodOverride());
+	//app.use(express.methodOverride());
 	app.use(express.static(path.join(__dirname, 'public')));
 	app.use(express.session({
 		store : new mongoStore({url: app.get('db-uri')}),
@@ -91,7 +84,6 @@ app.configure(function() {
 		global.User = app.User = User = mongoose.model('User');
 		global.Comment = app.Comment = Comment = mongoose.model("Comment");
 		// app.LoginToken = LoginToken = mongoose.model('LoginToken');
-//		db = mongoose.connect(app.get('db-uri'));
 	})
 	passportConfig.configPassport(app);
 	routes.setupRoutes(app);
@@ -100,12 +92,16 @@ app.configure(function() {
 	app.use(require('./routes/users'));
 
 });
-
-//define models
-
-
-
-
+function configureFormidable(app){
+	formidable.IncomingForm.prototype.onPart = function(part){
+		if (!part.filename) {
+		    // let formidable handle all non-file parts
+			console.log('let formidable handle all non-file parts');
+		    return incomingForm.handlePart(part);
+		}
+		console.log('File Upload');
+	}
+}
 //console.log("Clustering over %s cpus", numCPUs);
 /*if (cluster.isMaster) {
 	  // Fork workers.

@@ -13,6 +13,12 @@ function flash(level, msg, req) {
 function setupRoutes(app) {
 	Document = app.Document, User = app.User, Comment = app.Comment,
 			passport = app.Passport;
+	app.all('/test/*', function(req,res,next){
+		console.log("===========================================================================");
+		console.log(sys.inspect(req));
+		console.log("===========================================================================");
+		next();
+	});
 	// setup route handlers
 	// always try to set user
 	app.all('*', function(req, res, next) {
@@ -33,7 +39,7 @@ function setupRoutes(app) {
 			console.log("setting user " + req.user);
 			res.locals.user = req.user;
 		} else {
-			console.log('No user in req : ' + sys.inspect(req));
+			console.log('No user in req ');
 		}
 		console.log("HANDLING REQUEST FOR WORKER : " + app.woker_id);
 		next();
@@ -67,6 +73,32 @@ function setupRoutes(app) {
 		failureRedirect : '/sessions/new',
 		failureFlash : true
 	}));
+
+	
+	app.get('/upload', function(req, res){
+		res.render('upload/upload.jade');
+		  /*res.send('<form method="post" enctype="multipart/form-data">'
+		    + '<p>Title: <input type="text" name="title" /></p>'
+		    + '<p>Image: <input type="file" name="image" /></p>'
+		    + '<p><input type="submit" value="Upload" /></p>'
+		    + '</form>');*/
+		});
+
+		app.post('/upload', function(req, res, next){
+			console.time("post /upload");
+		  // the uploaded file can be found as `req.files.image` and the
+		  // title field as `req.body.title`
+		/*	req.files.forEach(function(file){
+				console.log("Present file : "+file.name);
+			  res.send(sys.format('\nuploaded %s (%d Kb) as %s to S3'
+			    , file.name
+			    , file.size / 1024 | 0 
+			    , file.mime
+			    ));
+			})*/
+			res.send(req.files);
+		  console.timeEnd("post /upload");
+		});
 
 }
 

@@ -87,7 +87,7 @@ function defineModels(mongoose, fn) {
 		 this.find({openid:options.openId}, function (err,usr){
 			 console.log("findOrCreate user: "+usr+" err: "+err);
 			 	 if(!usr ||usr == ""){
-			 		var user = new User();//createUser(options);
+			 		var user = new User();
 			 		 user.openId = options.openId;
 			 		return user.save(fn);
 			 	 }
@@ -108,10 +108,5 @@ function defineModels(mongoose, fn) {
 	mongoose.model('Comment', Comment);
 
 	fn();
-}
-function createUser(options){
-	 console.log("creating new user "+mongoose.model('User'));
-		 var user = new mongoose.model('User')();
-		 user.openId = options.openId;
 }
 exports.defineModels = defineModels;
