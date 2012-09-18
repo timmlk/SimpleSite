@@ -1,4 +1,5 @@
-var models = require('./models'), sys = require('util'), q = require('q');
+var models = require('./models'), sys = require('util'), q = require('q'), crypto = require('crypto');
+require('./extensions');
 
 var Document, User, Comment;
 
@@ -99,7 +100,31 @@ function setupRoutes(app) {
 			res.send(req.files);
 		  console.timeEnd("post /upload");
 		});
+		app.get('/direct', function (req,res, next){
+			// remember to enable cors <AllowedMethod>POST</AllowedMethod> for your domain
+			// requires s3:putObjectACL for the user key
+			var key = process.env.AWSSecretAccessKey;
+			var keyId = process.env.AWSAccessKeyId;
+			
+			if (!key) {
+				keyId = 'AKIAI2MIIHROTQNZJRNA';
+				key = 'JKQ6vRzFig5fUlNN5526dL+2xjIICuS0DFMqsH72';
+			}
+			var policy = {"expiration": "2013-12-01T12: 00: 00.000Z",	"conditions": [ {"bucket": "patsia"}, {"acl": "public-read-write"}, ["starts-with", "$Content-Type", "image/"],["starts-with", "$key",""], {"x-amz-meta-uuid": "14365123651274"}, ["starts-with", "$x-amz-meta-tag", ""] ] };
+			policy.expiration = new Date(Date.now()+1000*60*15).eformat("UTC:yyyy-mm-dd'T'HH:MM:ss'Z'");
+			var base64Policy = new Buffer(JSON.stringify(policy)).toString('base64');
+			console.log("DATE: "+policy.expiration);
+			var hmac = crypto.createHmac('sha1', key).update(base64Policy).digest(
+						'base64');
 
+		 res.render('upload/direct_upload', {
+			 keyID : keyId,
+			 policy : base64Policy ,
+			 signature : hmac
+		 });
+			
+			
+		});
 }
 
 exports.setupRoutes = setupRoutes;

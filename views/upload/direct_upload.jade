@@ -1,0 +1,24 @@
+extends ../layout
+
+block content
+    form(method="post", enctype="multipart/form-data", id="uploadform", action="http://patsia.s3.amazonaws.com").fileform
+        p Key to upload: 
+            input(type="input", name="key", value="${filename}")
+        input(type="hidden", name="acl", value="public-read-write")
+        
+        p Content-Type: 
+            input(type="input", name="Content-Type", value="image/jpeg")
+        input(type="hidden", name="x-amz-meta-uuid", value="14365123651274")
+        p Tags for File: 
+            input(type="input", name="x-amz-meta-tag", value ="") 
+        input(type="hidden", name="AWSAccessKeyId", value=keyID)
+        input(type="hidden", name="Policy", value =policy)
+        input(type="hidden", name="Signature", value=signature)
+        p Image: 
+            input(type="file", name="file", id="fileinput", multiple="false", onchange="fileSelected();")
+        p
+            input(type="button", value="Upload", id="uploadBtn")
+    div(id="fileName")
+    div(id="fileSize")
+    div(id="fileType")
+    progress(id="progressNumber")
