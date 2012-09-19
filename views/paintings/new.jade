@@ -1,0 +1,8 @@
+extends ../layout
+
+block content
+    legend New Painting
+    form(method='post', action='/paintings/' + d.id, enctype='multipart/form-data', id='painting_form').well.fileform
+      input(name='_method', value='POST', type='hidden')
+      include fields
+    script(type='text/javascript', src='/javascripts/upload.js')

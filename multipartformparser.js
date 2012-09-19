@@ -1,4 +1,4 @@
-var utils = require('connect').utils;
+var utils = require('connect').utils, cloudinary = require('cloudinary'),
 formidable = require('formidable'), _limit = require('connect').limit,
 		qs = require('qs'), sys = require('util'), s3 = require('./S3Storage');
 
@@ -41,6 +41,7 @@ exports = module.exports = function(options) {
 					});
 
 					function ondata(name, val, data) {
+						console.log("On data : "+name + ", "+val +", "+data);
 						if (val.indexOf('[')) {
 							// array
 							var arr = name.substring(0, name.indexOf('['));
@@ -81,6 +82,7 @@ exports = module.exports = function(options) {
 
 					
 					var s3stream;
+					var cloudinarystream;
 					form.on('end', function() {
 						if (done)
 							return;
@@ -90,6 +92,11 @@ exports = module.exports = function(options) {
 							if (s3stream) {
 								s3stream.end();
 								s3stream = null;
+							}
+							if(cloudinarystream){
+								cloudinarystream.end();
+								cloudinarystream = null;
+						
 							}
 							next();
 						} catch (err) {
@@ -103,6 +110,8 @@ exports = module.exports = function(options) {
 											+ sys.inspect(part));
 							return this.handlePart(part);
 						}
+						// emit on field for collecting filename
+						this.emit("field",part.name, part.filename);
 						// create PUT strem to S3 for the current file
 						var fileName = part.filename;
 						var mime = part.mime;
@@ -111,14 +120,16 @@ exports = module.exports = function(options) {
 							next(err);
 						}
 						// create the stream
-						s3stream = s3.uploadToS3(part.mime,
-								data['filesize'][part.filename], part.filename);
+				//		s3stream = s3.uploadToS3(part.mime,
+				//				data['filesize'][part.filename], part.filename);
+						cloudinarystream = cloudinary.uploader.upload_stream(function(result) { console.log(result); });
 						console.log("sending file : "+part.filename + " size : "+data['filesize'][part.filename]);
 						//attach file upload handler
 						part.on('data', function(buffer) {
 							form.pause();
 							// stream file data to S3
-							s3stream.write(buffer);
+					//		s3stream.write(buffer);
+							cloudinarystream.write(buffer);
 							form.resume();
 						});
 						// store file info in req

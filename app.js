@@ -83,6 +83,7 @@ app.configure(function() {
 		global.Document = app.Document = Document = mongoose.model('Document');
 		global.User = app.User = User = mongoose.model('User');
 		global.Comment = app.Comment = Comment = mongoose.model("Comment");
+		global.Painting = app.Painting = Painting = mongoose.model("Painting");
 		// app.LoginToken = LoginToken = mongoose.model('LoginToken');
 	})
 	passportConfig.configPassport(app);
@@ -90,6 +91,7 @@ app.configure(function() {
 	app.use(require('./routes/documents'));
 	app.use(require('./routes/sessions'));
 	app.use(require('./routes/users'));
+	app.use(require('./routes/paintings'));
 
 });
 function configureFormidable(app){

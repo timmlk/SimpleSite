@@ -1,0 +1,42 @@
+div.control-group
+    label(for='title').control-label Title:
+    div.controls
+        input(name='painting[title]', type='text', value=d.title || '', id='title').span5
+div.control-group
+    label(for='subheading').control-label Sub heading:
+    div.controls
+        input(name='painting[sub_heading]', type='text', value=d.sub_heading || '', id='subheading').span5
+div.control-group
+    label(for='dimensions').control-label Dimensions:
+    div.controls
+        input(name='painting[dimensions]', type='text', value=d.dimensions || '', id='dimensions').span5
+div.control-group
+    label(for='price').control-label Price:
+    div.controls
+        input(name='painting[price]', type='text', value=d.price || '', id='price').span5
+        
+div.control-group
+    label(for='text').control-label Text:
+    div.controls
+        textarea(name='painting[text]', rows='6',id='text').span5
+            =d.text || ''
+dic.control-group
+    label(for='category').control-label Category:
+    div.controls
+        select(name='painting[category]', id='category')
+            option(value='icon') Icon
+            option(value='portrait') Portrait
+            option(value='wood') Wood
+            
+div.control-group
+    label(for='createddate').control-label Created:
+    div.controls
+        input(name='painting[created_date]', rows='3',id='created_date', type='date', value=d.created_date.textVal() || '')
+div.control-group
+    label(for='image').control-label Painting:
+    div.controls
+        input(name='painting[image]', type='file', value=d.image || '', id='image').span5
+
+div.control-group
+    div.controls
+        input(type='submit', value='Save').btn.btn-primary

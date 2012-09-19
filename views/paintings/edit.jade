@@ -1,0 +1,8 @@
+extends ../layout
+
+block content
+    legend Edit Painting
+    form(method='post', action='/paintings/' + d.id).well
+      input(name='painting[id]', value=d.id, type='hidden')
+      input(name='_method', value='PUT', type='hidden')
+      include fields

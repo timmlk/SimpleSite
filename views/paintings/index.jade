@@ -1,0 +1,27 @@
+extends ../layout
+
+block content
+  legend Your Paintings
+  
+  p
+    a(class='btn btn-primary', href='/paintings/new') + New Document
+  
+  
+    - for (var d in paintings)
+     div.well
+        p.lead
+            =paintings[d].title
+        p
+            =paintings[d].text
+        p
+            img(src='http://s3.amazonaws.com/patsia/' + paintings[d].image, height='45', width='45')
+        
+        div.btn-group
+            - if(locals.enableCommentDelete)
+                a(class='btn btn-mini btn-primary', href='/paintings/' + paintings[d].id + '/edit') Edit
+                a(class='btn btn-mini btn-warning destroy', href='/paintings/' + paintings[d].id) <i class="icon-trash icon-white"></i> Delete
+            a(class='btn btn-mini', href='/paintings/' + paintings[d].id)
+              <i class="icon-zoom-in"></i> View
+            a(class='btn btn-mini', href='/paintings/' + paintings[d].id+'/comments/new')
+              <i class="icon-zoom-in"></i> Comment
+              

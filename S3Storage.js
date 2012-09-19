@@ -23,12 +23,12 @@ module.exports.uploadToS3 = function uploadToS3(contentType, contentLength,
 	date = date.eformat('ddd, dd mmm yyyy HH:MM:ss o');
 
 	var signature = createS3Signature('PUT', null, contentType, date,
-			'/patsia/' + filename)
+			bucket + filename)
 
 	var request = http.request({
 		'hostname' : s3_hostname,
 		'method' : 'PUT',
-		'path' : '/patsia/' + filename,
+		'path' : bucket + filename,
 		'headers' : {
 			'content-type' : contentType,
 			'content-length' : contentLength,

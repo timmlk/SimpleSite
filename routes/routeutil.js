@@ -32,6 +32,7 @@ module.exports.handleFormat =  function handleFormat(req, res, data/* json handl
 		if (arguments[4]) {
 			arguments[4]();
 		} else {
+			console.log("REnder default documents"  +arguments[4]);
 			res.render('documents/index.jade', {
 				documents : data
 			});

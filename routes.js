@@ -1,7 +1,7 @@
 var models = require('./models'), sys = require('util'), q = require('q'), crypto = require('crypto');
 require('./extensions');
 
-var Document, User, Comment;
+var Document, User, Comment, Painting;
 
 function flash(level, msg, req) {
 	console.log("flash");

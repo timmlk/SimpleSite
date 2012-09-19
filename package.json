@@ -21,7 +21,8 @@
          "passport-facebook" : ">=0.1.4",
          "connect" : ">=2.4.5",
          "qs" : ">=0.4.2",
-         "formidable" : ">=1.0.9"
+         "formidable" : ">=1.0.9",
+          "cloudinary": ""
          },
   "engines": {
     "node": "0.8.6",

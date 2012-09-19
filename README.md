@@ -11,6 +11,12 @@ Very simple site with a rest like interface.
 TODO
 ------
 Refac to use Q.js
+Paging 
+Icon datatype
+Categories for icons and articles
+
+
+
 
 DONE : Get rid of that pesky session... we dont like session data. 
     This would/should also enable clustering of the app.

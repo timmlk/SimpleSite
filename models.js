@@ -26,7 +26,8 @@ function defineModels(mongoose, fn) {
 		'keywords' : [ String ],
 		'user_id' : ObjectId,
 		'created_date' : Date,
-		'comments' : [ Comment ]
+		'comments' : [ Comment ],
+		'category' : {type: String, validate: [validatePresenceOf, 'a category i required']}
 	});
 
 	Document.virtual('id').get(function() {
@@ -103,9 +104,34 @@ function defineModels(mongoose, fn) {
 	    }
 	  });
 
+	  
+		/**
+		 * Model: Painting
+		 */
+		Painting = new Schema({
+			'title' : {
+				type : String,
+				index : true
+			},
+			'sub_heading' : String,
+			'dimensions' : String,
+			'text' : String,
+			'user_id' : ObjectId,
+			'created_date' : {type: Date, default: Date.now},
+			'comments' : [ Comment ],
+			'price' : String,
+			'image' : {type: String, validate: [validatePresenceOf, 'an image is required']},
+			'category' : {type: String, validate: [validatePresenceOf, 'a category i required']}
+		});
+
+		Painting.virtual('id').get(function() {
+			return this._id.toHexString();
+		});
+
 	mongoose.model('Document', Document);
 	mongoose.model('User', User);
 	mongoose.model('Comment', Comment);
+	mongoose.model('Painting', Painting);
 
 	fn();
 }

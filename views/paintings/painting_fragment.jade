@@ -1,0 +1,21 @@
+h2 
+    =d.title
+    small.pull-right  
+        =d.created_date.textVal() 
+h3
+    =d.sub_heading      
+p
+    img(src='http://s3.amazonaws.com/patsia/' + d.image, height='300', width='600')
+       
+p
+    Category: d.category    
+p
+    =d.text
+div.btn-group.pull-right
+    a(class='btn btn-mini', href='/paintings/' + d.id+'/comments/new')
+          <i class="icon-zoom-in"></i> Comment
+    - if(locals.enableCommentDelete)
+        a(class='btn btn-mini btn-primary', href='/paintings/' + d.id + '/edit') Edit
+        a(class='btn btn-mini btn-warning destroy', href='/paintings/' + d.id) <i class="icon-trash icon-white"></i> Delete
+        
+br    
