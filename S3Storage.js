@@ -10,10 +10,7 @@ var key = process.env.AWSSecretAccessKey;
 var keyId = process.env.AWSAccessKeyId;
 var bucket = process.env.AWSBucket || '/patsia/';
 
-if (!key) {
-	keyId = 'AKIAI2MIIHROTQNZJRNA';
-	key = 'JKQ6vRzFig5fUlNN5526dL+2xjIICuS0DFMqsH72';
-}
+
 
 module.exports.uploadToS3 = function uploadToS3(contentType, contentLength,
 		filename) {

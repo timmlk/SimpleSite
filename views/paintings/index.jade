@@ -14,7 +14,7 @@ block content
         p
             =paintings[d].text
         p
-            img(src='http://s3.amazonaws.com/patsia/' + paintings[d].image, height='45', width='45')
+            img(src='http://res.cloudinary.com/hsszh7wam/image/upload/h_90,w_120,r_20/' + paintings[d].imagepng)
         
         div.btn-group
             - if(locals.enableCommentDelete)

@@ -1,11 +1,11 @@
 extends ../layout
 
 block content
-    include ../documents/document_fragment.jade
-
+    //include ../documents/document_fragment.jade
+    #{html}
     legend New comment 
-        form(method='post', action='/documents/' + d.id+'/comments/new').well
+        form(method='post', action='/'+context+'/' + d.id+'/comments/new').well
           input(name='_method', value='POST', type='hidden')
           input(name='document[user_id]', value=d.id, type='hidden')
           include fields
-    include ../documents/comment_list.jade
+    include comment_list.jade

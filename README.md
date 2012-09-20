@@ -14,7 +14,7 @@ Refac to use Q.js
 Paging 
 Icon datatype
 Categories for icons and articles
-
+Refac painting and Doc views to use same view templates wehere possible
 
 
 

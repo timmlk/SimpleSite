@@ -63,8 +63,9 @@ app.configure(function() {
 	app.use(express.favicon());
 	app.use(express.logger('dev'));
 	//configureFormidable(app);
-	//app.use(express.bodyParser());
 	app.use(require('./multipartformparser')());
+	app.use(express.bodyParser());
+	
 	app.use(express.cookieParser());
 	app.use(express.methodOverride());
 	//app.use(express.methodOverride());

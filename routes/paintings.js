@@ -27,10 +27,18 @@ app.get('/paintings/:id/comments/new', util.ensureAuthenticated, function(req, r
 		// console.log(sys.inspect(models));
 		var com = new Comment();
 		com.created_date = new Date();
-		res.render('comments/new.jade', {
-			d : d,
-			c : com
-		});
+		 res.render('paintings/painting_fragment.jade', function(err, html) {
+			 res.render('comments/new.jade', {
+					d : d,
+					c : com,
+					context : 'paintings',
+					fragment : 'painting_fragment.jade',
+					html: html
+						
+				});
+		       
+		    });
+		
 	});
 });
 app.del('/paintings/:id/comments/:comid', util.ensureAuthenticated, function(req,
@@ -134,7 +142,8 @@ app.get('/paintings/:id.:format?', function(req, res) {
 		// console.log(sys.inspect(d));
 		util.handleFormat(req, res, d, null, function() {
 			res.render('paintings/view.jade', { // todo
-				d : d
+				d : d,
+				context : 'paintings'
 			});
 		});
 	});

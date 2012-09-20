@@ -127,6 +127,10 @@ function defineModels(mongoose, fn) {
 		Painting.virtual('id').get(function() {
 			return this._id.toHexString();
 		});
+		 Painting.virtual('imagepng')
+		    .get(function() {
+		      return this.image.split('.')[0]+'.png';
+		    });
 
 	mongoose.model('Document', Document);
 	mongoose.model('User', User);

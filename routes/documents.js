@@ -27,10 +27,14 @@ app.get('/documents/:id/comments/new', util.ensureAuthenticated, function(req, r
 		// console.log(sys.inspect(models));
 		var com = new Comment();
 		com.created_date = new Date();
-		res.render('comments/new.jade', {
-			d : d,
-			c : com
-		});
+		res.render('documents/document_fragment.jade', function(err, html) {
+			 res.render('comments/new.jade', {
+					d : d,
+					c : com,
+					context : 'documents',
+					html: html
+				});
+		    });
 	});
 });
 app.del('/documents/:id/comments/:comid', util.ensureAuthenticated, function(req,
@@ -56,8 +60,8 @@ app.del('/documents/:id/comments/:comid', util.ensureAuthenticated, function(req
 app.post('/documents/:id/comments/new', util.ensureAuthenticated,
 		function(req, res) {
 			Document.findById(req.params.id, function(err, d) {
-				console.log(sys.inspect(d));
 				var com = new Comment(req.body['comment']);
+				console.log("___________________"+sys.inspect(req.body));
 				if (!com.created_date) {
 					com.created_date = new Date();
 				}
@@ -129,7 +133,8 @@ app.get('/documents/:id.:format?', function(req, res) {
 		// console.log(sys.inspect(d));
 		util.handleFormat(req, res, d, null, function() {
 			res.render('documents/view.jade', { // todo
-				d : d
+				d : d,
+				context : 'documents'
 			});
 		});
 	});

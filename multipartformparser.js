@@ -10,6 +10,7 @@ exports = module.exports = function(options) {
 	var limit = options.limit ? _limit(options.limit) : noop;
 
 	return function multipart(req, res, next) {
+		
 		if (req._body)
 			return next();
 		req.body = req.body || {};
@@ -20,8 +21,10 @@ exports = module.exports = function(options) {
 			return next();
 
 		// check Content-Type
-		if ('multipart/form-data' != utils.mime(req))
+		if ('multipart/form-data' != utils.mime(req)){
+			console.log("XXXXXXXXXXXXXXXXXXXXXXXXXXX");
 			return next();
+		}
 
 		// flag as parsed
 		req._body = true;
@@ -89,15 +92,7 @@ exports = module.exports = function(options) {
 						try {
 							req.body = qs.parse(data);
 						//	req.files = qs.parse(files);
-							if (s3stream) {
-								s3stream.end();
-								s3stream = null;
-							}
-							if(cloudinarystream){
-								cloudinarystream.end();
-								cloudinarystream = null;
-						
-							}
+							
 							next();
 						} catch (err) {
 							next(err);
@@ -120,17 +115,32 @@ exports = module.exports = function(options) {
 							next(err);
 						}
 						// create the stream
-				//		s3stream = s3.uploadToS3(part.mime,
-				//				data['filesize'][part.filename], part.filename);
-						cloudinarystream = cloudinary.uploader.upload_stream(function(result) { console.log(result); });
+						s3stream = s3.uploadToS3(part.mime,
+								data['filesize'][part.filename], part.filename);
+						//cloudinarystream = cloudinary.uploader.upload_stream(function(result) { console.log(result); });
 						console.log("sending file : "+part.filename + " size : "+data['filesize'][part.filename]);
 						//attach file upload handler
 						part.on('data', function(buffer) {
-							form.pause();
+//							form.pause();
 							// stream file data to S3
-					//		s3stream.write(buffer);
-							cloudinarystream.write(buffer);
-							form.resume();
+							s3stream.write(buffer);
+						//	cloudinarystream.write(buffer);
+	//						form.resume();
+						});
+						part.on('end', function(){
+							if(cloudinarystream){
+								cloudinarystream.end();
+								cloudinarystream = null;
+						
+							}
+							
+							if (s3stream) {
+								s3stream.end();
+								s3stream = null;
+							}
+							setTimeout(function (){
+							cloudinary.uploader.upload("http://s3.amazonaws.com/patsia/"+part.filename, function(result) { console.log(result) }, {public_id: part.filename.split('.')[0]});
+							},1000);
 						});
 						// store file info in req
 						req.files.push({name: part.filename,

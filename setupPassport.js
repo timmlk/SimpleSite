@@ -38,7 +38,7 @@ exports.configPassport = function configurePassport(app) {
 		});
 	}));
 	passport.serializeUser(function(user, done) {
-		console.log("serialize : " + sys.inspect(user));
+	//	console.log("serialize : " + sys.inspect(user));
 		if (user.id) {
 			return done(null, user.id);
 		}
@@ -46,7 +46,7 @@ exports.configPassport = function configurePassport(app) {
 	});
 
 	passport.deserializeUser(function(id, done) {
-		console.log("deserializeUser " + id);
+	//	console.log("deserializeUser " + id);
 		User.findById(id, function(err, user) {
 			console.log("found user : " + sys.inspect(user));
 			done(err, user);

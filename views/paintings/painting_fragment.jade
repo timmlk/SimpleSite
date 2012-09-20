@@ -5,7 +5,9 @@ h2
 h3
     =d.sub_heading      
 p
-    img(src='http://s3.amazonaws.com/patsia/' + d.image, height='300', width='600')
+    a(href='http://s3.amazonaws.com/patsia/' + d.image, target='_blank')
+        img(src='http://res.cloudinary.com/hsszh7wam/image/upload/h_300,w_600/'+d.image)
+    
        
 p
     Category: d.category    
@@ -17,5 +19,3 @@ div.btn-group.pull-right
     - if(locals.enableCommentDelete)
         a(class='btn btn-mini btn-primary', href='/paintings/' + d.id + '/edit') Edit
         a(class='btn btn-mini btn-warning destroy', href='/paintings/' + d.id) <i class="icon-trash icon-white"></i> Delete
-        
-br    

@@ -6,7 +6,7 @@ module.exports.ensureAuthenticated =  function ensureAuthenticated(req, res, nex
 }
 
 module.exports.isDocOwner = function isDocOwner(req) {
-	console.log('isDocOwner : req.current_doc' + req.current_doc);
+	//console.log('isDocOwner : req.current_doc' + req.current_doc);
 	return (req.user && req.current_doc)
 			&& req.current_doc.user_id == req.user.id;
 }
@@ -19,7 +19,7 @@ module.exports.handleFormat =  function handleFormat(req, res, data/* json handl
 		else {
 			if (data instanceof Array) {
 				res.send(data.map(function(d) {
-					console.log(d);
+					//console.log(d);
 					return d;
 				}));
 			} else {
@@ -32,7 +32,6 @@ module.exports.handleFormat =  function handleFormat(req, res, data/* json handl
 		if (arguments[4]) {
 			arguments[4]();
 		} else {
-			console.log("REnder default documents"  +arguments[4]);
 			res.render('documents/index.jade', {
 				documents : data
 			});
