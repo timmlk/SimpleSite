@@ -33,7 +33,8 @@ $('#logout').bind('click', function(){
 	   .attr({
 	     'name': '_method',
 	     'value': 'delete'
-	   }).end();
+	   }).end()
+	   .submit();
 });
 
 $('.message').bind('click', function(e){

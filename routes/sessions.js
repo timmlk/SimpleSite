@@ -39,10 +39,10 @@ app.post('/sessions', passport.authenticate('local', {
 });
 
 app.del('/sessions', utils.ensureAuthenticated, function(req, res) {
-	console.log("close session");
+	console.log("close session#################################################################");
 	// Remove the session
 	if (req.session) {
-		req.session.destroy(function() {
+		req.session.destroy('sid',function() {
 		});
 	}
 	req.logOut();// close passport session

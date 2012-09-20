@@ -13,7 +13,15 @@ app.post('/users.:format?', function(req, res) {
 	var user = new User(req.body.user);
 	user.provider = 'local';
 	user.role = 'user';
-	console.log("user to create : " + sys.inspect(user));
+	//console.log("user to create : " + sys.inspect(user));
+	if(user.name.toLowerCase() === 'administrator' || user.name.toLowerCase().indexOf('admin') >-1){
+		
+		return res.render('users/new.jade', {
+				msg : {message : 'Admin name not allowed', level: 'Warning'}
+			}
+		);
+		
+	}else{
 
 	function userSaved() {
 		switch (req.params.format) {
@@ -30,11 +38,10 @@ app.post('/users.:format?', function(req, res) {
 	function userSaveFailed(err) {
 		console.log(err);
 		res.render('users/new.jade', {
-			locals : {
 				user : user
-			}
 		});
 	}
 
 	user.save(userSaved, userSaveFailed);
+	}
 });

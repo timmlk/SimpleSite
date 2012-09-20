@@ -72,7 +72,9 @@ app.configure(function() {
 	app.use(express.static(path.join(__dirname, 'public')));
 	app.use(express.session({
 		store : new mongoStore({url: app.get('db-uri')}),
-		secret : 'topsecret'
+		secret : 'herflux',
+		key : 'sid',
+		cookie : { path: '/', httpOnly: true, maxAge: null}
 	}));
 	app.use(passport.initialize());
 	app.use(passport.session());
@@ -93,7 +95,7 @@ app.configure(function() {
 	app.use(require('./routes/sessions'));
 	app.use(require('./routes/users'));
 	app.use(require('./routes/paintings'));
-
+setupDefaultUser();
 });
 function configureFormidable(app){
 	formidable.IncomingForm.prototype.onPart = function(part){
@@ -104,6 +106,26 @@ function configureFormidable(app){
 		}
 		console.log('File Upload');
 	}
+}
+function setupDefaultUser(){
+	var User = global.User;
+	User.find({name: 'Administrator'}, function(err,users){
+		if(!users || users.length === 0){
+		//	console.log(sys.inspect(process.env));
+			if(!process.env.AdminPassword){
+				throw "Admin password must be set in env";
+			}
+			var admin = new User();
+			admin.email = 'admin@test.com';
+			admin.password = process.env.AdminPassword;
+			
+			admin.role= 'admin';
+			admin.provider = 'local';
+			admin.name = 'Administrator';
+			admin.save();
+		}
+	});
+	
 }
 //console.log("Clustering over %s cpus", numCPUs);
 /*if (cluster.isMaster) {

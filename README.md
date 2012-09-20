@@ -12,15 +12,18 @@ TODO
 ------
 Refac to use Q.js
 Paging 
-Icon datatype
+
 Categories for icons and articles
 Refac painting and Doc views to use same view templates wehere possible
+menu, based on categories
 
 
 
-DONE : Get rid of that pesky session... we dont like session data. 
+DONE : 
+Get rid of that pesky session... we dont like session data. 
     This would/should also enable clustering of the app.
-    
+Icon datatype
+    Made as painting model    
 
 
 NOTES

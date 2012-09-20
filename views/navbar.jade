@@ -9,7 +9,7 @@ div.navbar
             li
                 a(href="#")
         - if(locals.user && locals.user.email) // seems that user id always present in cookie so passport always sets this
-            a(href="/sessions/new")#logout.btn.btn-inverse.btn-mini.pull-right Logout
+            a(href="#")#logout.btn.btn-inverse.btn-mini.pull-right Logout
             p.navbar-text.pull-right  
                 =locals.user.name || locals.user.email 
         - else 
