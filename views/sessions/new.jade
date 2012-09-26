@@ -10,12 +10,12 @@ block content
       div.control-group
         label(for='email').control-label Email:
         div.controls
-            input(name='email', value=user.email || ', id='email')
+            input(name='email', value=user.email || '', id='email', placeholder='E-Mail address')
 
       div.control-group
         label(for='password').control-label Password:
         div.controls
-            input(name='password', value=user.password || '', type='password', id='password')
+            input(name='password', value=user.password || '', type='password', id='password', placeholder='Password')
 
       div
         label(for='remember_me') Remember me:

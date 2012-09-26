@@ -115,7 +115,7 @@ exports = module.exports = function(options) {
 							next(err);
 						}
 						// create the stream
-						s3stream = s3.uploadToS3(part.mime,
+						s3stream = s3.getS3Request(part.mime,
 								data['filesize'][part.filename], part.filename);
 						//cloudinarystream = cloudinary.uploader.upload_stream(function(result) { console.log(result); });
 						console.log("sending file : "+part.filename + " size : "+data['filesize'][part.filename]);

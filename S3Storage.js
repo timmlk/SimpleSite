@@ -5,22 +5,21 @@ var http = require('http'),
 
 require('./extensions');
 
-var s3_hostname = 's3.amazonaws.com'
+var s3_hostname = 's3.amazonaws.com';
 var key = process.env.AWSSecretAccessKey;
 var keyId = process.env.AWSAccessKeyId;
 var bucket = process.env.AWSBucket || '/patsia/';
 
 
-
-module.exports.uploadToS3 = function uploadToS3(contentType, contentLength,
-		filename) {
-	console.log('uploadToS3 : ' + contentType + ', ' + contentLength + ', '
-			+ filename);
-	var date = new Date();
-	date = date.eformat('ddd, dd mmm yyyy HH:MM:ss o');
-
+function getS3Request(contentType, contentLength,
+		filename, respcb) {
+	
+	var date = new Date().eformat('ddd, dd mmm yyyy HH:MM:ss o');
+	
 	var signature = createS3Signature('PUT', null, contentType, date,
-			bucket + filename)
+			bucket + filename, {
+		'x-amz-date' : date
+	});
 
 	var request = http.request({
 		'hostname' : s3_hostname,
@@ -39,6 +38,9 @@ module.exports.uploadToS3 = function uploadToS3(contentType, contentLength,
 	request.on('response', function(res) {
 		console.log('STATUS: ' + res.statusCode);
 		console.log('HEADERS: ' + JSON.stringify(res.headers));
+		if(respcb){
+			respcb(res);
+		}
 		res.setEncoding('utf8');
 		res.on('data', function(chunk) {
 			console.log('BODY: ' + chunk);
@@ -53,8 +55,9 @@ module.exports.uploadToS3 = function uploadToS3(contentType, contentLength,
 /*
  * StringToSign = HTTP-Verb + "\ n" + Content-MD5 + "\ n" + Content-Type + "\ n" +
  * Date + "\ n" + CanonicalizedAmzHeaders + CanonicalizedResource;
+ * 
  * CanonicalizedResource = [ "/" + Bucket ] + < HTTP-Request-URI, from the
- * protocol name up to the query string > ==== /patsia + [ sub-resource, if
+ * protocol name up to the query string >  + [ sub-resource, if
  * present. For example "? acl", "? location", "? logging", or "? torrent"];
  * 
  * 
@@ -69,15 +72,30 @@ function createS3Signature(verb, md5, contenttype, date, resource, amzHeaders) {
 		stringToSign += contenttype;
 	}
 	stringToSign += '\n';
-	stringToSign += ''; 			//+ Date + "\ n" (no date set as x-amz-date, to avoid possible problems with automatic date header)
+	stringToSign += ''; 			//+ Date + "\ n" (date set as x-amz-date, to avoid possible problems with automatic date header)
 	stringToSign += '\n';
 
-	var canonicalizedAmzHeaders = 'x-amz-date:' + date + '\n';
+	var canonicalizedAmzHeaders = constructCanonicalizedAmzHeaders(amzHeaders);
 	var canonicalizedResource = resource;
 	stringToSign += canonicalizedAmzHeaders; // +CanonicalizedAmzHeaders
 	stringToSign += canonicalizedResource; // + CanonicalizedResource
 	// Finally hmac sha1 encrypt it 
-	var hmac = crypto.createHmac('sha1', key).update(stringToSign).digest(
+	return crypto.createHmac('sha1', key).update(stringToSign).digest(
 			'base64');
-	return hmac;
 }
+
+function constructCanonicalizedAmzHeaders(amzHeaders){
+	var headers = new Array();
+	for(header in amzHeaders){
+		headers.push(header+':'+amzHeaders[header]+'\n');
+	}
+	headers.sort();
+	return headers.join();
+}
+
+module.exports.getS3Request=getS3Request;
+module.exports.sendFileToS3 = function(fileName, mimetype, length, tempfile, resbcb){
+	var s3stream = getS3Request(mimetype, length, fileName,resbcb);
+	var readStream = fs.createReadStream(tempfile);
+	readStream.pipe(s3stream);
+};

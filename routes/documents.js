@@ -12,7 +12,7 @@ app.all('/documents/:id.:format?*', function(req, res, next) {
 		Document.findById(req.params.id, function(err, doc) {
 			console.log("Setting current doc");
 			req.current_doc = doc;
-			res.locals.enableCommentDelete = util.isDocOwner(req);
+			
 			next();
 		});
 	} else {
@@ -37,12 +37,10 @@ app.get('/documents/:id/comments/new', util.ensureAuthenticated, function(req, r
 		    });
 	});
 });
-app.del('/documents/:id/comments/:comid', util.ensureAuthenticated, function(req,
+app.del('/documents/:id/comments/:comid', util.ensureAuthenticated,util.ensureAuthorized, function(req,
 		res) {
 	console.log("delete comment");
 	Document.findById(req.params.id, function(err, d) {
-		if (util.isDocOwner(req)) {
-			console.log("Found doc");
 			d.comments.id(req.params.comid).remove();
 			d.save(function() {
 				util.handleFormat(req, res, d, null, function() {
@@ -50,18 +48,13 @@ app.del('/documents/:id/comments/:comid', util.ensureAuthenticated, function(req
 				});
 
 			});
-		} else {
-			console.log("redirect to not authorized");
-			res.redirect('/notauthorized.jade');
-		}
-
 	});
 });
 app.post('/documents/:id/comments/new', util.ensureAuthenticated,
 		function(req, res) {
 			Document.findById(req.params.id, function(err, d) {
 				var com = new Comment(req.body['comment']);
-				console.log("___________________"+sys.inspect(req.body));
+				
 				if (!com.created_date) {
 					com.created_date = new Date();
 				}
@@ -91,7 +84,7 @@ app.get('/documents.:format?', function(req, res) {
 });
 
 // Create
-app.post('/documents/:id.:format?', util.ensureAuthenticated, function(req, res) {
+app.post('/documents/:id.:format?', util.ensureAuthenticated,util.ensureAuthorized, function(req, res) {
 	var document = new Document(req.body['document']);
 	if (!document.created_date) {
 		document.created_date = new Date();
@@ -141,7 +134,7 @@ app.get('/documents/:id.:format?', function(req, res) {
 });
 
 // Update
-app.put('/documents/:id.:format?', function(req, res) {
+app.put('/documents/:id.:format?', util.ensureAuthenticated,util.ensureAuthorized,function(req, res) {
 	// Load the document
 	Document.findById(req.body.document.id, function(err, d) {
 		console.log("Update document: " + req.body.document.id);
@@ -157,7 +150,7 @@ app.put('/documents/:id.:format?', function(req, res) {
 });
 
 // Delete
-app.del('/documents/:id.:format?', util.ensureAuthenticated, function(req, res) {
+app.del('/documents/:id.:format?', util.ensureAuthenticated,util.ensureAuthorized, function(req, res) {
 	console.log('deleting:' + req.params.id)
 	// Load the document
 	Document.findById(req.params.id, function(err, d) {

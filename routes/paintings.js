@@ -6,7 +6,7 @@ Document = global.Document, User = global.User, Comment = global.Comment, Painti
 /**
  * Always try to load doc TODO maybe convert to middleware
  */
-app.all('/paintings/:id.:format?*', function(req, res, next) {
+/*app.all('/paintings/:id.:format?*', function(req, res, next) {
 	console.log("trying to default load doc");
 	if (req.params.id) {
 		Painting.findById(req.params.id, function(err, doc) {
@@ -20,7 +20,7 @@ app.all('/paintings/:id.:format?*', function(req, res, next) {
 		next();
 	}
 
-});
+})*/;
 // comments
 app.get('/paintings/:id/comments/new', util.ensureAuthenticated, function(req, res) {
 	Painting.findById(req.params.id, function(err, d) {
@@ -41,11 +41,11 @@ app.get('/paintings/:id/comments/new', util.ensureAuthenticated, function(req, r
 		
 	});
 });
-app.del('/paintings/:id/comments/:comid', util.ensureAuthenticated, function(req,
+app.del('/paintings/:id/comments/:comid', util.ensureAuthenticated, util.ensureAuthorized, function(req,
 		res) {
 	console.log("delete comment");
 	Painting.findById(req.params.id, function(err, d) {
-		if (util.isDocOwner(req)) {
+		//if (util.isInRole('admin',req)) {
 			console.log("Found doc");
 			d.comments.id(req.params.comid).remove();
 			d.save(function() {
@@ -54,10 +54,10 @@ app.del('/paintings/:id/comments/:comid', util.ensureAuthenticated, function(req
 				});
 
 			});
-		} else {
-			console.log("redirect to not authorized");
-			res.redirect('/notauthorized.jade');
-		}
+		//} else {
+			//console.log("redirect to not authorized");
+			//res.redirect('/notauthorized.jade');
+		//}
 
 	});
 });
@@ -99,7 +99,7 @@ app.get('/paintings.:format?', function(req, res) {
 });
 
 // Create
-app.post('/paintings/:id.:format?', util.ensureAuthenticated, function(req, res) {
+app.post('/paintings/:id.:format?', util.ensureAuthenticated,util.ensureAuthorized, function(req, res) {
 	var painting = new Painting(req.body['painting']);
 	console.log(sys.inspect(req.body['painting']));
 	if (!Painting.created_date) {
@@ -150,15 +150,27 @@ app.get('/paintings/:id.:format?', function(req, res) {
 });
 
 // Update
-app.put('/paintings/:id.:format?', function(req, res) {
+app.put('/paintings/:id.:format?', util.ensureAuthenticated,util.ensureAuthorized, function(req, res) {
 	// Load the painting
 	Painting.findById(req.body.painting.id, function(err, d) {
-		console.log("Update painting: " + req.body.painting.id);
+		console.log("Update painting: " + sys.inspect(req.body.painting));
 		// Do something with it
-		d.title = req.body.painting.title;
-		d.data = req.body.painting.data;
+		var upd = req.body.painting;
+		d.title = upd.title;
+		d.sub_heading = upd.sub_heading; 
+		d.dimensions = upd.dimensions;
+		d.text = upd.text;
+		d.price = upd.price;
+		d.category = upd.category;
+		if(upd.image && upd.image.length > 0){
+			d.image = upd.image;
+		}
 		d.save(function() {
-			util.handleFormat(req, res, d, null, function() {
+			util.handleFormat(req, res, d, null, function(err) {
+				if(err){
+					console.log("ERROR "+sys.inspect(err) );
+					res.locals.msg = {message : err};
+				}
 				res.redirect('/paintings');
 			});
 		})
@@ -166,7 +178,7 @@ app.put('/paintings/:id.:format?', function(req, res) {
 });
 
 // Delete
-app.del('/paintings/:id.:format?', util.ensureAuthenticated, function(req, res) {
+app.del('/paintings/:id.:format?', util.ensureAuthenticated, util.ensureAuthorized, function(req, res) {
 	console.log('deleting:' + req.params.id)
 	// Load the painting
 	Painting.findById(req.params.id, function(err, d) {

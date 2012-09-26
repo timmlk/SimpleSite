@@ -1,11 +1,11 @@
 div.control-group
     label(for='title').control-label Title:
     div.controls
-        input(name='document[title]', type='text', value=d.title || '', id='title').span5
+        input(name='document[title]', type='text', value=d.title || '', id='title', placeholder='The documents title').span5
 div.control-group
     label(for='note').control-label Note:
     div.controls
-        textarea(name='document[data]', rows='6',id='note').span5
+        textarea(name='document[data]', rows='6',id='note', placeholder='Type the document text').span5
             =d.data || ''
 div.control-group
     label(for='createddate').control-label Created:

@@ -1,32 +1,32 @@
 div.control-group
     label(for='title').control-label Title:
     div.controls
-        input(name='painting[title]', type='text', value=d.title || '', id='title').span5
+        input(name='painting[title]', type='text', value=d.title || '', id='title', placeholder='Title').span5
 div.control-group
     label(for='subheading').control-label Sub heading:
     div.controls
-        input(name='painting[sub_heading]', type='text', value=d.sub_heading || '', id='subheading').span5
+        input(name='painting[sub_heading]', type='text', value=d.sub_heading || '', id='subheading', placeholder='sub heading').span5
 div.control-group
     label(for='dimensions').control-label Dimensions:
     div.controls
-        input(name='painting[dimensions]', type='text', value=d.dimensions || '', id='dimensions').span5
+        input(name='painting[dimensions]', type='text', value=d.dimensions || '', id='dimensions', placeholder="10''x20''").span5
 div.control-group
     label(for='price').control-label Price:
     div.controls
-        input(name='painting[price]', type='text', value=d.price || '', id='price').span5
+        input(name='painting[price]', type='text', value=d.price || '', id='price', placeholder='Price 200$').span5
         
 div.control-group
     label(for='text').control-label Text:
     div.controls
-        textarea(name='painting[text]', rows='6',id='text').span5
+        textarea(name='painting[text]', rows='6',id='text', placeholder='Text descriping the painting').span5
             =d.text || ''
 dic.control-group
     label(for='category').control-label Category:
     div.controls
-        select(name='painting[category]', id='category')
-            option(value='icon') Icon
-            option(value='portrait') Portrait
-            option(value='wood') Wood
+        select(name='painting[category]', id='category', value=d.category || '')
+            option(value='Icon') Icon
+            option(value='Portrait') Portrait
+            option(value='Wood') Wood
             
 div.control-group
     label(for='createddate').control-label Created:

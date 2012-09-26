@@ -1,4 +1,4 @@
-var models = require('./models'), sys = require('util'), q = require('q'), crypto = require('crypto');
+var models = require('./models'), sys = require('util'), q = require('q'), crypto = require('crypto'), util = require('./routes/routeutil');
 require('./extensions');
 
 var Document, User, Comment, Painting;
@@ -39,10 +39,11 @@ function setupRoutes(app) {
 		if (req.user) {
 			console.log("setting user " + req.user);
 			res.locals.user = req.user;
+			
 		} else {
 			console.log('No user in req ');
 		}
-		console.log("HANDLING REQUEST FOR WORKER : " + app.woker_id);
+		res.locals.enableCommentDelete = util.isInRole("admin",req);
 		next();
 	});
 
@@ -103,17 +104,14 @@ function setupRoutes(app) {
 		app.get('/direct', function (req,res, next){
 			// remember to enable cors <AllowedMethod>POST</AllowedMethod> for your domain
 			// requires s3:putObjectACL for the user key
+			var bucket = 'patsia';
 			var key = process.env.AWSSecretAccessKey;
 			var keyId = process.env.AWSAccessKeyId;
 			
-			if (!key) {
-				keyId = 'AKIAI2MIIHROTQNZJRNA';
-				key = 'JKQ6vRzFig5fUlNN5526dL+2xjIICuS0DFMqsH72';
-			}
-			var policy = {"expiration": "2013-12-01T12: 00: 00.000Z",	"conditions": [ {"bucket": "patsia"}, {"acl": "public-read-write"}, ["starts-with", "$Content-Type", "image/"],["starts-with", "$key",""], {"x-amz-meta-uuid": "14365123651274"}, ["starts-with", "$x-amz-meta-tag", ""] ] };
+			var policy = {"expiration": "",	"conditions": [ {"bucket": bucket}, {"acl": "public-read-write"}, ["starts-with", "$Content-Type", "image/"],["starts-with", "$key",""], {"x-amz-meta-uuid": "14365123651274"}, ["starts-with", "$x-amz-meta-tag", ""] ] };
 			policy.expiration = new Date(Date.now()+1000*60*15).eformat("UTC:yyyy-mm-dd'T'HH:MM:ss'Z'");
 			var base64Policy = new Buffer(JSON.stringify(policy)).toString('base64');
-			console.log("DATE: "+policy.expiration);
+			
 			var hmac = crypto.createHmac('sha1', key).update(base64Policy).digest(
 						'base64');
 
