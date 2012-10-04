@@ -9,10 +9,12 @@ block content
   
     - for (var d in documents)
      div.well
-        p.lead
+        div.comments-header
             =documents[d].title
+            span.pull-right.muted  
+                =documents[d].created_date.textVal()
         p
-            =documents[d].data
+            !{documents[d].data}
         div.btn-group
             - if(locals.enableCommentDelete)
                 a(class='btn btn-mini btn-primary', href='/documents/' + documents[d].id + '/edit') Edit

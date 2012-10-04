@@ -44,6 +44,9 @@ function setupRoutes(app) {
 			console.log('No user in req ');
 		}
 		res.locals.enableCommentDelete = util.isInRole("admin",req);
+		// setup context for menus ....
+		res.locals.context = req.path;
+		res.locals.menu = [{active : req.path == '/index', href : '/index', title:'Home'},{active : req.path == '/documents', href : '/documents', title:'Documents'},{active : req.path == '/paintings', href : '/paintings', title:'Paintings'}];
 		next();
 	});
 

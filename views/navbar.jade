@@ -1,27 +1,36 @@
 div.navbar
     div.navbar-inner
-        a(href='#').brand Title
-        ul.nav
-            li.active
-                a(href="#") Home
-            li
-                a(href="/documents") Documents
-            li
-                a(href="#")
-        - if(locals.user && locals.user.email) // seems that user id always present in cookie so passport always sets this
-            a(href="#")#logout.btn.btn-inverse.btn-mini.pull-right Logout
-            p.navbar-text.pull-right  
-                =locals.user.name || locals.user.email 
-        - else 
-            div.btn-group.pull-right
-                a(href="#", data-toggle="dropdown").btn.btn-primary.dropdown-toggle Login
-                    span.caret
-                ul.dropdown-menu
-                    li
-                        a(href="/sessions/new") Local
-                    li
-                        a(href="/auth/google") Google
-                    li
-                        a(href="/auth/facebook") Facebook
-              
+        div.container
+            a(data-toggle='collapse', data-target='.nav-collapse').btn.btn-navbar 
+                span.icon-bar
+                span.icon-bar
+                span.icon-bar
+            a(href='#').brand Title
+            div.nav-collapse 
                 
+                ul.nav
+                    li.active
+                        a(href="#") Home
+                    li
+                        a(href="/documents") Documents
+                    li
+                        a(href="#")
+                div.login
+                    - if(locals.user && locals.user.email) // seems that user id always present in cookie so passport always sets this
+                        span.username 
+                            =locals.user.name || locals.user.email
+                        a(href="#")#logout.btn.btn-inverse.btn-mini Logout
+                        
+                    - else 
+                        div.btn-group
+                            a(href="#", data-toggle="dropdown").btn.btn-primary.dropdown-toggle Login
+                                span.caret
+                            ul.dropdown-menu
+                                li
+                                    a(href="/sessions/new") Local
+                                li
+                                    a(href="/auth/google") Google
+                                li
+                                    a(href="/auth/facebook") Facebook
+                      
+                        

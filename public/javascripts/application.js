@@ -122,3 +122,9 @@ function progressHandlingFunction(e){
         $('progress').attr({value:e.loaded,max:e.total});
     }
 }
+
+//$(":input:not(:button)").each(function () {
+//    this.oninvalid = validationFail;
+ //   this.onblur = validate;
+ //   
+//});

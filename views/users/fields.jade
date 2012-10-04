@@ -1,14 +1,22 @@
-div.control-group
-    label(for='name').control-label User name:
-    div.controls
-        input(name='user[name]', value=user.name|| ', id='name', placeholder='User name')
-        
-div.control-group
-    label(for='email').control-label Email:
-    div.controls
-        input(name='user[email]', value=user.email || ', id='email', placeholder='mail@someplace.com')
-
-div.control-group
-    label(for='password').control-label Password:
-    div.controls
-        input(name='user[password]', value=user.password || '', type='password', id='password', placeholder='Password')
+fieldset
+    div.control-group
+        label(for='name').control-label User name:
+        div.controls
+            input(name='user[name]', type='text',  value=user.name|| '', 
+                id='name', 
+                placeholder='User name', 
+                required,   pattern='[a-zA-Z ]{5,}', autofocus
+            )
+            div.invalid.text-warning The required user name must be a series of atleast 5 alphabetical characters.
+                    
+    div.control-group
+        label(for='email').control-label Email:
+        div.controls
+            input(name='user[email]', type='email', value=user.email || '', id='email', placeholder='mail@someplace.com', required)
+            div.invalid.text-warning The required email address may not include any special 
+                characters other than the '@' sign.
+    div.control-group
+        label(for='password').control-label Password:
+        div.controls
+            input(name='user[password]', value=user.password || '', type='password', id='password', placeholder='Password', minlength='5', pattern='.{5,}', required)
+            div.invalid.text-warning The password must be at least 5 characters

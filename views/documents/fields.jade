@@ -1,17 +1,18 @@
-div.control-group
-    label(for='title').control-label Title:
-    div.controls
-        input(name='document[title]', type='text', value=d.title || '', id='title', placeholder='The documents title').span5
-div.control-group
-    label(for='note').control-label Note:
-    div.controls
-        textarea(name='document[data]', rows='6',id='note', placeholder='Type the document text').span5
-            =d.data || ''
-div.control-group
-    label(for='createddate').control-label Created:
-    div.controls
-        input(name='document[created_date]', rows='3',id='created_date', type='date', value=d.created_date.textVal() || '')
-div.control-group
-    div.controls
-        input(type='submit', value='Save').btn.btn-primary
+fieldset
+    div.control-group
+        label(for='title').control-label Title:
+        div.controls
+            input(name='document[title]', type='text', value=d.title || '', id='title', placeholder='The documents title', required).span5
+    div.control-group
+        label(for='note').control-label Text:
+        div.controls
+            textarea(name='document[data]', rows='6',id='note', placeholder='Type the document text', required).span5
+                =d.data || ''
+    div.control-group
+        label(for='createddate').control-label Created:
+        div.controls
+            input(name='document[created_date]', rows='3',id='created_date', type='date', value=d.created_date.textVal() || '')
+    div.control-group
+        div.controls
+            input(type='submit', value='Save').btn.btn-primary
         

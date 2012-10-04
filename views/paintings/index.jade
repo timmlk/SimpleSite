@@ -9,10 +9,13 @@ block content
   
     - for (var d in paintings)
      div.well
-        p.lead
+        h3
             =paintings[d].title
-        p
-            =paintings[d].text
+        p.lead
+            #{paintings[d].sub_heading} 
+            
+        //  p
+        //      !{paintings[d].text}*/
         p
             img(src='http://res.cloudinary.com/hsszh7wam/image/upload/h_90,w_120,r_20/' + paintings[d].imagepng)
         

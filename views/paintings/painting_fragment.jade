@@ -1,18 +1,19 @@
-h2 
-    =d.title
-    small.pull-right  
+article.document-content
+    span.pull-right.muted  
         =d.created_date.textVal() 
-h3
-    =d.sub_heading      
-p
-    a(href='http://s3.amazonaws.com/patsia/' + d.image, target='_blank')
-        img(src='http://res.cloudinary.com/hsszh7wam/image/upload/h_300,w_600/'+d.image)
+    h2 
+        =d.title
+    p.lead
+        =d.sub_heading      
+    p
+        a(href='http://s3.amazonaws.com/patsia/' + d.image, target='_blank')
+            img(src='http://res.cloudinary.com/hsszh7wam/image/upload/h_300,w_600/'+d.image,  align='left')
     
        
-p
-    Category: d.category    
-p
-    =d.text
+    p
+        Category: d.category    
+    p
+        !{d.text}
 div.btn-group.pull-right
     a(class='btn btn-mini', href='/paintings/' + d.id+'/comments/new')
           <i class="icon-zoom-in"></i> Comment

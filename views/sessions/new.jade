@@ -7,18 +7,19 @@ block content
     form.users#login(method='post', action='/sessions')
       - if(locals.redirectTo)  
             input(name='redirect', value=redirectTo, type='hidden')
-      div.control-group
-        label(for='email').control-label Email:
-        div.controls
-            input(name='email', value=user.email || '', id='email', placeholder='E-Mail address')
-
-      div.control-group
-        label(for='password').control-label Password:
-        div.controls
-            input(name='password', value=user.password || '', type='password', id='password', placeholder='Password')
-
-      div
-        label(for='remember_me') Remember me:
-        input#remember_me(type='checkbox', name='remember_me')
-      div
-        input(type='submit', value='Log In').btn.btn-primary
+      fieldset              
+          div.control-group
+            label(for='email').control-label Email:
+            div.controls
+                input(name='email', value=user.email || '', id='email', placeholder='E-Mail address', type="email", required)
+    
+          div.control-group
+            label(for='password').control-label Password:
+            div.controls
+                input(name='password', value=user.password || '', type='password', id='password', placeholder='Password', required)
+    
+          div
+            label(for='remember_me') Remember me:
+            input#remember_me(type='checkbox', name='remember_me')
+          div
+            input(type='submit', value='Log In').btn.btn-primary

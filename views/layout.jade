@@ -2,18 +2,31 @@
 html
   head
     title= 'Web Node'
-    link(rel='stylesheet', href='/stylesheets/style.css')
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
     link(rel='stylesheet', href='/stylesheets/bootstrap.css')
     link(rel='stylesheet', href='/stylesheets/bootstrap-responsive.css')
+    link(rel='stylesheet', href='/stylesheets/style.css')
     script(type='text/javascript', src='https://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js')
     body
         include navbar
         div.row
-            div.page-header.span10.offset2
+            header.page-header
                 h1 Timms fantastiske node.js test site
-                    p
-                        small Dette er en test af node.js med Express, mongo, mongose, jade, stylus, twitter bootstrap, passport,  ...
-            div.span6.offset3
+                    p Dette er en test af node.js med Express, mongo, mongose, jade, stylus, twitter bootstrap, passport,  ...
+            div.span2.left-menu 
+                ul(data-spy="affix").nav.nav-list.leftnav 
+                    - for (item in menu)
+                        - if (menu[item].active)
+                            li.active
+                                a(href=menu[item].href) #{menu[item].title} 
+                        - else{
+                            li
+                                a(href=menu[item].href) #{menu[item].title} 
+                        - }
+                                        
+                    
+            div#content-div.span7.offset0
                 include message
                 block content
         script(type='text/javascript', src='/javascripts/application.js')

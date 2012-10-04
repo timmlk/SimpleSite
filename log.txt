@@ -1,0 +1,12 @@
+10:42:46 web.1  | started with pid 8596
+10:42:48 web.1  | configure dev
+10:42:48 web.1  | Configuring mongo db uri on : mongodb://localhost/webnode-dev
+10:42:49 web.1  | configure : [object Object]
+10:42:50 web.1  | define models
+10:42:50 web.1  | Express server listening on port 5000
+10:42:50 web.1  | Express server listening on port 5000, environment: development
+SIGINT received
+10:42:52 system | sending SIGKILL to all processes
+10:42:52 system | sending SIGKILL to web.1 at pid 8596
+10:42:52 web.1  | exited with code 58
+Afbryd batchjob (J/N)? 

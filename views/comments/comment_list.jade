@@ -1,9 +1,8 @@
 - for (var i = 0; i<d.comments.length; i++)
     div.well
-        p
-            small 
-                =d.comments[i].user_name
-            small.pull-right
+        div.comment-header 
+            =d.comments[i].user_name
+            span.pull-right.muted
                 =d.comments[i].created_date.textVal()
         p
             =d.comments[i].comment

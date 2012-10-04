@@ -1,9 +1,11 @@
-h2 
-    =d.title
-    small.pull-right  
+article.document-content
+    span.pull-right.muted  
         =d.created_date.textVal() 
-p
-    =d.data
+    h2 
+        =d.title
+   
+    p
+        !{d.data}
 div.btn-group.pull-right
     a(class='btn btn-mini', href='/documents/' + d.id+'/comments/new')
           <i class="icon-zoom-in"></i> Comment
