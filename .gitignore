@@ -3,3 +3,5 @@
 *.log.env 
 .env
 test.js
+notes.txt
+
