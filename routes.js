@@ -48,10 +48,19 @@ function setupRoutes(app) {
 		// setup context for menus ....
 		res.locals.context = req.path.split('/')[1];
 		console.log(req.path.split('/'));
-		res.locals.menu = [{active : res.locals.context == 'index', href : '/index', title:'Home'},{active : res.locals.context == 'documents', href : '/documents', title:'Documents'},{active : res.locals.context == 'paintings', href : '/paintings', title:'Paintings'}];
+		res.locals.menu = generateMenu(res);
+		
 		next();
 	});
-
+	function generateMenu(res){
+		var menu = [{active : res.locals.context == 'index', href : '/index', title:'Home'},{active : res.locals.context == 'documents', href : '/documents', title:'Documents'}];
+		global.categories.forEach(function(cat){
+			if(cat.inmenu)
+				menu.push({active : res.locals.context == cat.name.toLowerCase(), href : '/paintings?cat='+cat.name, title:cat.name, description:cat.description});
+		});
+		return menu;
+//		[{active : res.locals.context == 'index', href : '/index', title:'Home'},{active : res.locals.context == 'documents', href : '/documents', title:'Documents'},{active : res.locals.context == 'paintings', href : '/paintings', title:'Paintings'}];
+	}
 	// Redirect the user to Google for authentication. When complete, Google
 	// will redirect the user back to the application at
 	// /auth/google/return

@@ -84,10 +84,11 @@ app.post('/paintings/:id/comments/new', util.ensureAuthenticated,
 		});
 
 // setup painting handlers
-// List
-app.get('/paintings.:format?', function(req, res) {
-	console.log("got req glsadf: " + req.url);
-	Painting.find(function(err, paintings) {
+function renderPaintings(req,res,q){
+	if(!q){
+		q={};
+	}
+	Painting.find(q, function(err, paintings) {
 		if (!paintings)
 			paintings = [];
 		util.handleFormat(req, res, paintings,null,function(){
@@ -96,7 +97,18 @@ app.get('/paintings.:format?', function(req, res) {
 			});
 		});
 	});
+
+}
+// List
+
+app.get('/paintings/category/:category.:format?', function(req, res) {
+	console.log("Category : " + sys.inspect(req.params));
+	renderPaintings(req,res,{category : req.params.category});
 });
+app.get('/paintings.:format?', function(req, res) {
+	renderPaintings(req,res);
+});
+
 
 // Create
 app.post('/paintings/:id.:format?', util.ensureAuthenticated,util.ensureAuthorized, function(req, res) {
@@ -131,7 +143,8 @@ app.get('/paintings/new', function(req, res) {
 	d.created_date = new Date();
 	console.log("Date : " + d.created_date);
 	res.render('paintings/new.jade', {
-		d : d
+		d : d,
+		cat : global.categories
 	});
 });
 

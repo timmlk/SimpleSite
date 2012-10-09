@@ -28,9 +28,9 @@ html
                             - }
                         li
                             - if(locals.user && locals.user.email) // seems that user id always present in cookie so passport always sets this
-                                span.username 
-                                    =locals.user.name || locals.user.email
-                                a(href="#")#logout.btn.btn-inverse.btn-mini Logout
+                              //  span.username 
+                              //      =locals.user.name || locals.user.email
+                              a(href="#")#logout.btn.btn-inverse.btn-mini Logout
                                 
                             - else 
                                     a(href="#", data-toggle="dropdown").dropdown-toggle Login &nbsp;

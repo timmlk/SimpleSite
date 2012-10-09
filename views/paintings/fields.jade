@@ -25,9 +25,9 @@ fieldset
         label(for='category').control-label Category:
         div.controls
             select(name='painting[category]', id='category', value=d.category || '', required)
-                option(value='Icon') Icon
-                option(value='Portrait') Portrait
-                option(value='Wood') Wood
+                - for(c in cat)
+                    option(value=cat[c].name) #{cat[c].name} 
+               
                 
     div.control-group
         label(for='createddate').control-label Created:

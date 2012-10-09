@@ -70,6 +70,7 @@ app.configure(function() {
 		global.User = app.User = User = mongoose.model('User');
 		global.Comment = app.Comment = Comment = mongoose.model("Comment");
 		global.Painting = app.Painting = Painting = mongoose.model("Painting");
+		global.Category = app.Category = Category = mongoose.model("Category");
 		// app.LoginToken = LoginToken = mongoose.model('LoginToken');
 	})
 	
@@ -96,7 +97,8 @@ app.configure(function() {
 	app.use(require('./routes/sessions'));
 	app.use(require('./routes/users'));
 	app.use(require('./routes/paintings'));
-setupDefaultUser();
+	setupDefaultUser();
+	setupDefaultCategories();
 });
 function configureFormidable(app){
 	formidable.IncomingForm.prototype.onPart = function(part){
@@ -126,6 +128,30 @@ function setupDefaultUser(){
 			admin.save();
 		}
 	});
+	
+}
+function setupDefaultCategories(){
+	var cat = global.Category;
+	cat.find(function(err, categories){
+		if(!categories || categories.length === 0){
+			// insert 
+			['Icon', 'Portrait', 'Wood'].forEach(function(name){
+				var cat =  new global.Category();
+				cat.name=name;
+				cat.description='';
+				cat.save();
+			});
+			
+			cat.find(function (err, categories){
+				global.categories = categories;
+			});
+			
+		}else{
+			console.log('Setting categories');
+			global.categories = categories;
+		}
+	})
+	
 	
 }
 //console.log("Clustering over %s cpus", numCPUs);

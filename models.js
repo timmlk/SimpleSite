@@ -139,10 +139,17 @@ function defineModels(mongoose, fn) {
 		      return this.text;
 		    });
 
+		Category = new Schema({
+				'name': String,
+				'description' : String,  
+				'inmenu' : {type: Boolean, default: true}
+			});
+	    
 	mongoose.model('Document', Document);
 	mongoose.model('User', User);
 	mongoose.model('Comment', Comment);
 	mongoose.model('Painting', Painting);
+	mongoose.model('Category', Category);
 
 	fn();
 }

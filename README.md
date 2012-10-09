@@ -16,6 +16,7 @@ Paging
 Categories for icons and articles
 Refac painting and Doc views to use same view templates wehere possible
 menu, based on categories
+Check for code duplication, refac multiformparser so that it and passport doesent have the same functionality.
 
 
 
