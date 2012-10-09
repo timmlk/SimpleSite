@@ -1,22 +1,25 @@
-article.document-content
-    span.pull-right.muted  
-        =d.created_date.textVal() 
-    h2 
-        =d.title
-    p.lead
-        =d.sub_heading      
-    p
-        a(href='http://s3.amazonaws.com/patsia/' + d.image, target='_blank')
-            img(src='http://res.cloudinary.com/hsszh7wam/image/upload/h_300,w_600/'+d.image,  align='left')
+div.prim-content
+    article.document-content
+        span.pull-right.muted  
+            =d.created_date.textVal() 
+        h2 
+            =d.title
+        p.lead
+            =d.sub_heading      
+        p
+            a(href='http://s3.amazonaws.com/patsia/' + d.image).lightbox
+                img(src='http://res.cloudinary.com/hsszh7wam/image/upload/h_300,w_600/'+d.image,  align='left')
+        
+           
+        p
+            Category: d.category    
+        p
+            !{d.text}
+    div.btn-group.pull-right
+        a(class='btn btn-mini', href='/paintings/' + d.id+'/comments/new')
+              <i class="icon-zoom-in"></i> Comment
+        - if(locals.enableCommentDelete)
+            a(class='btn btn-mini btn-primary', href='/paintings/' + d.id + '/edit') Edit
+            a(class='btn btn-mini btn-warning destroy', href='/paintings/' + d.id) <i class="icon-trash icon-white"></i> Delete
+
     
-       
-    p
-        Category: d.category    
-    p
-        !{d.text}
-div.btn-group.pull-right
-    a(class='btn btn-mini', href='/paintings/' + d.id+'/comments/new')
-          <i class="icon-zoom-in"></i> Comment
-    - if(locals.enableCommentDelete)
-        a(class='btn btn-mini btn-primary', href='/paintings/' + d.id + '/edit') Edit
-        a(class='btn btn-mini btn-warning destroy', href='/paintings/' + d.id) <i class="icon-trash icon-white"></i> Delete

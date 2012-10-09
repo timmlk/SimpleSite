@@ -9,12 +9,15 @@ div.navbar
             div.nav-collapse 
                 
                 ul.nav
-                    li.active
-                        a(href="#") Home
-                    li
-                        a(href="/documents") Documents
-                    li
-                        a(href="#")
+                    - for (item in menu)
+                            - if (menu[item].active)
+                                li.active
+                                    a(href=menu[item].href) #{menu[item].title} 
+                            - else{
+                                li
+                                    a(href=menu[item].href) #{menu[item].title} 
+                            - }
+                    
                 div.login
                     - if(locals.user && locals.user.email) // seems that user id always present in cookie so passport always sets this
                         span.username 
@@ -22,15 +25,7 @@ div.navbar
                         a(href="#")#logout.btn.btn-inverse.btn-mini Logout
                         
                     - else 
-                        div.btn-group
-                            a(href="#", data-toggle="dropdown").btn.btn-primary.dropdown-toggle Login
-                                span.caret
-                            ul.dropdown-menu
-                                li
-                                    a(href="/sessions/new") Local
-                                li
-                                    a(href="/auth/google") Google
-                                li
-                                    a(href="/auth/facebook") Facebook
+                        a(href="/sessions/new").btn.btn-primary Login
+                                
                       
                         

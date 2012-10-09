@@ -12,13 +12,14 @@ block content
         h3
             =paintings[d].title
         p.lead
-            #{paintings[d].sub_heading} 
+            =paintings[d].sub_heading 
             
-        //  p
-        //      !{paintings[d].text}*/
         p
-            img(src='http://res.cloudinary.com/hsszh7wam/image/upload/h_90,w_120,r_20/' + paintings[d].imagepng)
-        
+            img(src='http://res.cloudinary.com/hsszh7wam/image/upload/h_180,w_240,r_20/' + paintings[d].imagepng).thumb.clearfix
+            !{paintings[d].summary}
+       
+       
+        div.clear
         div.btn-group
             - if(locals.enableCommentDelete)
                 a(class='btn btn-mini btn-primary', href='/paintings/' + paintings[d].id + '/edit') Edit
@@ -27,4 +28,5 @@ block content
               <i class="icon-zoom-in"></i> View
             a(class='btn btn-mini', href='/paintings/' + paintings[d].id+'/comments/new')
               <i class="icon-zoom-in"></i> Comment
+       
               

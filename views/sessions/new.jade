@@ -4,10 +4,15 @@ block content
     legend Log In
     p
       a.button(href='/users/new').btn Create an account
+    p  or login with 
+    div.btn-group
+        a(href="/auth/google", class='btn btn-mini') Google
+        a(href="/auth/facebook", class='btn btn-mini') Facebook
     form.users#login(method='post', action='/sessions')
       - if(locals.redirectTo)  
             input(name='redirect', value=redirectTo, type='hidden')
-      fieldset              
+      fieldset         
+          p or login with a local user     
           div.control-group
             label(for='email').control-label Email:
             div.controls

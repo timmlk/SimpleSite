@@ -7,8 +7,9 @@ var sys = require('util'),
 var host_name = process.env.HOST_NAME;
 
 if(!host_name){
-	host_name = 'http://localhost:3000';
+	host_name = 'http://localhost';
 }
+host_name += ':'+process.env.PORT;
 
 exports.configPassport = function configurePassport(app) {
 	var User = app.User;
@@ -60,7 +61,7 @@ exports.configPassport = function configurePassport(app) {
 		console.log("Return from google : " + identifier + ", profile: "
 				+ sys.inspect(profile));
 		User.findOne({
-			openId : identifier
+			name : profile.displayName
 		}, function(err, usr) {
 			if (!usr || usr == "") {
 				var user = new User();// createUser(options);
@@ -88,7 +89,7 @@ exports.configPassport = function configurePassport(app) {
 		  console.log("accessToken : "+ accessToken );
 			done(null,null);
 			User.findOne({
-				openId : profile.id
+				name : profile.displayName
 			}, function(err, usr) {
 				if (!usr || usr == "") {
 					var user = new User();// createUser(options);

@@ -20,7 +20,7 @@ $('.destroy').live('click', function(e) {
   }
 });
 
-$('#logout').bind('click', function(){
+$('#logout').live('click', function(){
 	var form = $('<form></form>');
 	 form
 	   .attr({
@@ -128,3 +128,9 @@ function progressHandlingFunction(e){
  //   this.onblur = validate;
  //   
 //});
+$('.lightbox').lightBox({fixedNavigation:true,
+	imageLoading: '/img/lightbox-ico-loading.gif',
+	imageBtnClose: '/img/lightbox-btn-close.gif',
+	imageBtnPrev: '/img/lightbox-btn-prev.gif',
+	imageBtnNext: '/img/lightbox-btn-next.gif',
+	imageBlank: '/img/lightbox-blank.gif'});

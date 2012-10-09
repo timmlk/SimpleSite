@@ -45,8 +45,9 @@ function setupRoutes(app) {
 		}
 		res.locals.enableCommentDelete = util.isInRole("admin",req);
 		// setup context for menus ....
-		res.locals.context = req.path;
-		res.locals.menu = [{active : req.path == '/index', href : '/index', title:'Home'},{active : req.path == '/documents', href : '/documents', title:'Documents'},{active : req.path == '/paintings', href : '/paintings', title:'Paintings'}];
+		res.locals.context = req.path.split('/')[1];
+		console.log(req.path.split('/'));
+		res.locals.menu = [{active : res.locals.context == 'index', href : '/index', title:'Home'},{active : res.locals.context == 'documents', href : '/documents', title:'Documents'},{active : res.locals.context == 'paintings', href : '/paintings', title:'Paintings'}];
 		next();
 	});
 
@@ -125,6 +126,9 @@ function setupRoutes(app) {
 		 });
 			
 			
+		});
+		app.get('/test', function(req,res,next){
+				res.render('test');
 		});
 }
 

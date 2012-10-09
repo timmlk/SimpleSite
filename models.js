@@ -49,11 +49,11 @@ function defineModels(mongoose, fn) {
 	  }
 
 	  User = new Schema({
-	    'email': { type: String, validate: [validatePresenceOf, 'an email is required'], index: { unique: true } },
+	    'email': { type: String, validate: [validatePresenceOf, 'an email is required'], index: { unique: false } },
 	    'hashed_password': String,
 	    'salt': String,
 	    'openId' : String,
-	    'name' : String,
+	    'name' : {type: String, index: { unique: true }},
 	    'role' : String,
 	    'provider' : String
 	  });
@@ -130,6 +130,13 @@ function defineModels(mongoose, fn) {
 		 Painting.virtual('imagepng')
 		    .get(function() {
 		      return this.image.split('.')[0]+'.png';
+		    });
+		 Painting.virtual('summary')
+		    .get(function() {
+		    	if(this.text.length > 1000){
+		    		return this.text.substring(0,1000);
+		    	}
+		      return this.text;
 		    });
 
 	mongoose.model('Document', Document);

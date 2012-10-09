@@ -6,28 +6,46 @@ html
   
     link(rel='stylesheet', href='/stylesheets/bootstrap.css')
     link(rel='stylesheet', href='/stylesheets/bootstrap-responsive.css')
+    link(rel='stylesheet', href='/stylesheets/jquery.lightbox-0.5.css')
     link(rel='stylesheet', href='/stylesheets/style.css')
     script(type='text/javascript', src='https://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js')
     body
         include navbar
         div.row
             header.page-header
+                
                 h1 Timms fantastiske node.js test site
                     p Dette er en test af node.js med Express, mongo, mongose, jade, stylus, twitter bootstrap, passport,  ...
-            div.span2.left-menu 
+            div.span2.left-menu
                 ul(data-spy="affix").nav.nav-list.leftnav 
-                    - for (item in menu)
-                        - if (menu[item].active)
-                            li.active
-                                a(href=menu[item].href) #{menu[item].title} 
-                        - else{
-                            li
-                                a(href=menu[item].href) #{menu[item].title} 
-                        - }
-                                        
-                    
+                        - for (item in menu)
+                            - if (menu[item].active)
+                                li.active
+                                    a(href=menu[item].href) #{menu[item].title} 
+                            - else{
+                                li
+                                    a(href=menu[item].href) #{menu[item].title} 
+                            - }
+                        li
+                            - if(locals.user && locals.user.email) // seems that user id always present in cookie so passport always sets this
+                                span.username 
+                                    =locals.user.name || locals.user.email
+                                a(href="#")#logout.btn.btn-inverse.btn-mini Logout
+                                
+                            - else 
+                                    a(href="#", data-toggle="dropdown").dropdown-toggle Login &nbsp;
+                                        span.caret
+                                    ul.dropdown-menu
+                                        li
+                                            a(href="/sessions/new") Local
+                                        li
+                                            a(href="/auth/google") Google
+                                        li
+                                            a(href="/auth/facebook") Facebook                    
             div#content-div.span7.offset0
                 include message
                 block content
+        script(type='text/javascript', src='/javascripts/jquery.lightbox-0.5.min.js')
         script(type='text/javascript', src='/javascripts/application.js')
         script(type='text/javascript', src='/javascripts/bootstrap.js')
+    

@@ -139,7 +139,10 @@ exports = module.exports = function(options) {
 								s3stream = null;
 							}
 							setTimeout(function (){
-							cloudinary.uploader.upload("http://s3.amazonaws.com/patsia/"+part.filename, function(result) { console.log(result) }, {public_id: part.filename.split('.')[0]});
+							cloudinary.uploader.upload("http://s3.amazonaws.com/patsia/"+part.filename, function(result) { console.log(result) }, 
+									{public_id: part.filename.split('.')[0], transformation : {
+	                            overlay : "watermark"
+	                         }});
 							},1000);
 						});
 						// store file info in req

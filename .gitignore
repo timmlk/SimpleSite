@@ -4,4 +4,4 @@
 .env
 test.js
 notes.txt
-
+*.log
