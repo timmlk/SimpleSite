@@ -4,7 +4,8 @@ block content
   legend Your Documents
   
   p
-    a(class='btn btn-primary', href='/documents/new') + New Document
+    - if(locals.enableCommentDelete)
+        a(class='btn btn-primary', href='/documents/new') + New Document
   
   
     - for (var d in documents)

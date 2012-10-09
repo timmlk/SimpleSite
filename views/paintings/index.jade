@@ -2,9 +2,10 @@ extends ../layout
 
 block content
   legend Your Paintings
-  
   p
-    a(class='btn btn-primary', href='/paintings/new') + New Document
+  
+    - if(locals.enableCommentDelete)
+        a(class='btn btn-primary', href='/paintings/new') + New Document
   
   
     - for (var d in paintings)

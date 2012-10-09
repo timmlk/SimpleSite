@@ -62,25 +62,8 @@ app.configure(function() {
 	app.set('view engine', 'jade');
 	app.use(express.favicon());
 	app.use(express.logger('dev'));
-	//configureFormidable(app);
-	app.use(require('./multipartformparser')());
-	app.use(express.bodyParser());
 	
-	app.use(express.cookieParser());
-	app.use(express.methodOverride());
-	//app.use(express.methodOverride());
-	app.use(express.static(path.join(__dirname, 'public')));
-	app.use(express.session({
-		store : new mongoStore({url: app.get('db-uri')}),
-		secret : 'herflux',
-		key : 'sid',
-		cookie : { path: '/', httpOnly: true, maxAge: null}
-	}));
-	app.use(passport.initialize());
-	app.use(passport.session());
-	app.use(express.logger({
-		format : '\x1b[1m:method\x1b[0m \x1b[33m:url\x1b[0m :response-time ms'
-	}));
+	
 	models.defineModels(mongoose, function() {
 		console.log("define models");
 		global.Document = app.Document = Document = mongoose.model('Document');
@@ -89,6 +72,24 @@ app.configure(function() {
 		global.Painting = app.Painting = Painting = mongoose.model("Painting");
 		// app.LoginToken = LoginToken = mongoose.model('LoginToken');
 	})
+	
+	app.use(express.cookieParser());
+	app.use(express.methodOverride());
+	app.use(express.static(path.join(__dirname, 'public')));
+	app.use(express.session({
+		store : new mongoStore({url: app.get('db-uri')}),
+		secret : 'herflux',
+		key : 'sid',
+		cookie : { path: '/', httpOnly: true, maxAge: null}
+	}));
+	app.use(require('./multipartformparser')()); // require use of cookieParser, session and models
+	app.use(express.bodyParser());
+	app.use(passport.initialize());
+	app.use(passport.session());
+	app.use(express.logger({
+		format : '\x1b[1m:method\x1b[0m \x1b[33m:url\x1b[0m :response-time ms'
+	}));
+	
 	passportConfig.configPassport(app);
 	routes.setupRoutes(app);
 	app.use(require('./routes/documents'));

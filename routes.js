@@ -24,6 +24,7 @@ function setupRoutes(app) {
 	// always try to set user
 	app.all('*', function(req, res, next) {
 		console.log("App all *");
+		
 		if (req.session.msg) { // hack to facilitate obsolete flash method used
 								// in express... change express
 			res.locals.msg = req.session.msg;
